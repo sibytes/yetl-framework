@@ -1,8 +1,8 @@
 apiVersion: "yetl-framework.io/en/1/datastore"
 adls:
   default:
+    id: "default"
     name: "default"
-    folder: "default"
     description: "Landing ADLS store for {{datastore_name}}"
     container: "landing"
     schema: "default"

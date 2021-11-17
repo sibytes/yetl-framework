@@ -1,7 +1,8 @@
 apiVersion: "yetl-framework.io/en/1/dataset"
 csv:
   default:
-    name: "default"
+    id: "default"
+    name: "{{dataset_name}}"
     read_options: 
       schema_versioning: true
       column_delimiter: ""
@@ -20,7 +21,7 @@ csv:
     partition_file_format: "YYYY-mm-dd"
     extension: "csv"
     compression_type: "none"
-    dataset: "{{datastore_name}}-{{partition_file_datetime}}.ext"
+    filename: "{{datastore_name}}-{{partition_file_datetime}}.ext"
     path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}/{{partition_path_datetime}}/{{version}}"
     mode: "DROPMALFORMED"
     columnNameOfCorruptRecord: "_corrupt_record"
@@ -32,7 +33,7 @@ csv:
       json_table_schema: "json_{{datastore_schema}}_{{dataset_name}}.json"
       json_column_schema: "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
   datasets:
-    - name: "permissive"
+    - id: "permissive"
       mode: "PERMISSIVE"
       columnNameOfCorruptRecord: null
       bad_records_path: null
