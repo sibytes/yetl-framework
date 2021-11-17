@@ -1,21 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/datastore_adls.schema.json",
-  "title": "Azure Datalake Store",
+  "$id": "https://example.com/datastore_deltalake.schema.json",
+  "title": "Datalake Store",
   "description": "",
   "type": "object",
   "properties": {
     "version": { "type": "string" },
-    "adls": {
+    "datalake": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
         "description": {
-          "type": "string"
-        },
-        "container": {
           "type": "string"
         },
         "schema": {
@@ -25,18 +22,17 @@
           "type": "string"
         },
         "default_dataset": {
-            "$ref": "https://example.com/dataset_adls.schema.json" 
+            "$ref": "https://example.com/dataset_deltalake.schema.json" 
         }
       },
       "required": [
         "name",
         "description",
-        "container",
         "schema",
         "account",
         "default_dataset"
       ]
     }
   },
-  "required": ["version", "adls"]
+  "required": ["version", "deltalake"]
 }

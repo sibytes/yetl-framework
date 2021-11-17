@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/dataset_deltalake.schema.json",
+  "title": "Deltalake dataset",
+  "description": "Deltalake dataset properties",
+  "type": "object",
+  "properties": {
+    "tablename": {
+      "type": "string"
+    },
+    "dbfs_root": {
+      "type": "string"
+    },
+    "storage_root": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "writeoptions": {
+      "$ref": "https://example.com/write_options_deltalake.schema.csv"
+    }
+  },
+  "required": ["tablename", "dbfs_root", "storage_root", "path", "writeoptions"]
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/transformation.schema.json",
+  "title": "Basic Transformation",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string" },
+    "subtype": { "type": "string" },
+    "namespace": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "validation": {
+      "$ref": "https://example.com/transformation_validation.schema.json" 
+    },
+    "timeout_seconds": { "type": "integer", "minimum": 60 }
+  },
+  "required": [
+    "id",
+    "type",
+    "subtype",
+    "namespace",
+    "name",
+    "description",
+    "validation"
+  ]
+}

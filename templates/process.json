@@ -1,0 +1,30 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+  "process": "{{template_process}}",
+  "sources": [
+    {
+      "dataset": "{{template_dataset}}"
+    }
+  ],
+  "transforms": [
+    {
+      "template_transformaion": "{{template_transformaion}}",
+      "template_ordinal": "{{template_ordinal}}"
+    }
+  ],
+  "destinations": [
+    {
+      "dataset": "{{template_dataset}}"
+    }
+  ],
+  "dependencies": {
+    "default_status": "success",
+    "process_statuses": [
+      {
+        "process": "{{template_process}}",
+        "status": "{{template_status}}",
+        "operator": "{{template_operator}}"
+      }
+    ]
+  }
+}

@@ -8,83 +8,46 @@
     "schema_versioning": {
       "type": "boolean"
     },
-    "compression_type": {
-      "type": "string",
-      "enum": ["none"]
+    "column_delimiter": {
+      "type": "string"
+    },
+    "row_delimiter": {
+      "type": "string"
+    },
+    "skip_line_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "column_names_ifr": {
+      "type": "boolean"
+    },
+    "quote_character": {
+      "type": "string"
+    },
+    "null_value": {
+      "type": "string"
+    },
+    "empty_column_null": {
+      "type": "boolean"
     },
     "timestamp_format": {
       "type": "string"
     },
     "date_format": {
       "type": "string"
-    },
-    "days_retention_period": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "partition_path_format": {
-      "type": "string"
-    },
-    "partition_file_format": {
-      "type": "string"
-    },
-    "extension": {
-      "type": "string"
-    },
-    "format": {
-      "type": "string",
-      "enum": ["json"]
-    },
-    "dataset": {
-      "type": "string"
-    },
-    "path": {
-      "type": "string"
-    },
-    "mode": {
-      "type": "string",
-      "emum": ["permissive", "failfast", "dropmalformed"]
-    },
-    "columnNameOfCorruptRecord": {
-      "type": "string"
-    },
-    "bad_records_path": {
-      "type": "string"
-    },
-    "data_schema": {
-      "type": "object",
-      "properties": {
-        "spark_schema_path": {
-          "type": "string"
-        },
-        "spark_table_schema": {
-          "type": "string"
-        },
-        "spark_column_schema": {
-          "type": "string"
-        },
-        "json_table_schema": {
-          "type": "string"
-        },
-        "json_column_schema": {
-          "type": "string"
-        }
-      },
-      "required": ["spark_schema_path", "spark_table_schema"]
     }
   },
   "required": [
-    "compression_type",
+    "schema_versioning",
     "column_delimiter",
     "row_delimiter",
-    "days_retention_period",
-    "partition_path_format",
-    "partition_file_format",
-    "extension",
-    "format",
-    "dataset",
-    "path",
-    "bad_records_path",
-    "data_schema"
+    "skip_line_count",
+    "column_names_ifr",
+    "escape_character",
+    "quote_character",
+    "null_value",
+    "empty_column_null",
+    "timestamp_format",
+    "date_format"
   ]
 }

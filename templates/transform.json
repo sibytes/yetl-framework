@@ -1,11 +1,10 @@
 {
     "version": "yetl-framework.readthedocs.io/en/alpha1/",
-    "id": "dbx_load_raw",
-    "type" : "databricks",
-    "subtype" : "notebook",
-    "namespace": "/yetl/jaffle_shop",
-    "name": "load_raw",
-    "description": "Generic process transformation that loads raw from landing",
+    "name": "{{template_name}}",
+    "description": "{{description}}",
+    "type" : "{{template_type}}",
+    "subtype" : "{{template_subtype}}",
+    "namespace": "{{namespace}}",
     "validation" :
     {
         "reconcile": true,

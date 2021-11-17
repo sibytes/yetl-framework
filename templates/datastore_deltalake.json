@@ -1,0 +1,21 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+
+  "deltalake": {
+    "name": "{{template_name}}",
+    "description": "{{template_description}}",
+    "account": "{{template_account}}",
+    "schema": "{{template_schema}}",
+    "default_dataset": {
+      "tablename": "{{schema}}_{{dataset}}",
+      "write_options": {
+        "partition": ["partition"],
+        "mode": "overwrite",
+        "mergeschema": true
+      },
+      "dbfs_root": "dbfs://mnt",
+      "storage_root": "abfss://{{account}}.dfs.core.ms",
+      "path": "{{container}}/{{datastore}}/{{classification}}/{{schema}}"
+    }
+  }
+}

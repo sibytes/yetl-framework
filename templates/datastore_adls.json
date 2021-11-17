@@ -1,11 +1,11 @@
 {
   "version": "yetl-framework.readthedocs.io/en/alpha1/",
   "adls": {
-    "name": "jaffle_shop",
-    "description": "{{datastore}} source operational database",
-    "container": "staging",
-    "schema": "default",
-    "account": "adlgeneva",
+    "name": "{{template_name}}",
+    "description": "{{template_description}}",
+    "container": "{{template_container}}",
+    "schema": "{{template_schema}}",
+    "account": "{{template_account}}",
     "default_dataset": {
       "format": "csv",
       "read_options": {
@@ -33,11 +33,11 @@
       "columnNameOfCorruptRecord": "_corrupt_record",
       "bad_records_path": "{{container}}/{{datastore}}/exceptions/{{schema}}/{{partition}}/{{version}}",
       "data_schema": {
-        "spark_schema_path": "{{container}}/spark_schema/{{datastore}}",
-        "spark_table_schema": "spark_{{schema}}_{{dataset}}_{{version}}.json",
-        "spark_column_schema": "spark_{{schema}}_{{dataset}}_{{column}}.json",
-        "json_table_schema": "spark_{{schema}}_{{dataset}}.json",
-        "json_column_schema": "spark_{{schema}}_{{dataset}}_{{column}}.json"
+        "schema_path": "{{datastore_container}}/spark_schema/{{datastore_name}}",
+        "spark_table_schema": "spark_{{datastore_schema}}_{{dataset_name}}.json",
+        "spark_column_schema": "spark_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json",
+        "json_table_schema": "json_{{datastore_schema}}_{{dataset_name}}.json",
+        "json_column_schema": "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
       }
     }
   }

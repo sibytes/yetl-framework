@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/write_options_deltalake.schema.json",
+  "title": "Deltalake write options",
+  "description": "Write options for deltalake format",
+  "type": "object",
+  "properties": {
+    "partition": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["overwrite", "append"]
+    },
+    "mergeschema": {
+      "type": "boolean"
+    }
+  },
+  "required": ["mode", "mergeschema"]
+}
+
+

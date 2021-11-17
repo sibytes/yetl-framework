@@ -1,0 +1,36 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+
+  "format": "csv",
+  "read_options": {
+    "schema_versioning": {{template_schema_versioning}},
+    "column_delimiter": "{{template_column_delimiter}}",
+    "row_delimiter": "{{template_row_delimiter}}",
+    "skip_line_count": {{template_skip_line_count}},
+    "column_names_ifr": {{template_column_names_ifr}},
+    "escape_character": "{{template_escape_character}}",
+    "quote_character": "{{template_quote_character}}",
+    "null_value": "{{template_null_value}}",
+    "empty_column_null": {{template_empty_column_null}},
+    "timestamp_format": "{{template_timestamp_format}}",
+    "date_format": "{{template_date_format}}"
+  },
+  "encoding": "{{template_encoding}}",
+  "days_retention_period": {{template_days_retention_period}},
+  "partition_path_format": "{{template_partition_path_format}}",
+  "partition_file_format": "{{template_partition_file_format}}",
+  "extension": "{{template_extension}}",
+  "compression_type": "{{template_compression_type}}",
+  "dataset": "{{template_dataset}}",
+  "path": "{{template_path}}",
+  "mode": "{{template_mode}}",
+  "columnNameOfCorruptRecord": "{{template_corrupt_record}}",
+  "bad_records_path": "{{container}}/{{datastore}}/exceptions/{{schema}}/{{partition}}/{{version}}",
+  "data_schema": {
+    "schema_path": "{{datastore_container}}/spark_schema/{{datastore_name}}",
+    "spark_table_schema": "spark_{{datastore_schema}}_{{dataset_name}}.json",
+    "spark_column_schema": "spark_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json",
+    "json_table_schema": "json_{{datastore_schema}}_{{dataset_name}}.json",
+    "json_column_schema": "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
+  }
+}
