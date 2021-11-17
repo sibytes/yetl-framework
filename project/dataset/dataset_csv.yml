@@ -1,4 +1,4 @@
-apiVersion: "yetl-framework.readthedocs.io/en/alpha1/dataset"
+apiVersion: "yetl-framework.io/en/1/dataset"
 csv:
   default:
     name: "default"
@@ -20,8 +20,8 @@ csv:
     partition_file_format: "YYYY-mm-dd"
     extension: "csv"
     compression_type: "none"
-    dataset: "dataset-partition_file_format.ext"
-    path: "{{container}}/{{datastore}}/{{classification}}/{{schema}}/{{partition}}/{{version}}"
+    dataset: "{{datastore_name}}-{{partition_file_datetime}}.ext"
+    path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}/{{partition_path_datetime}}/{{version}}"
     mode: "DROPMALFORMED"
     columnNameOfCorruptRecord: "_corrupt_record"
     bad_records_path: "container/datastore/exceptions/schema/partition/version"
@@ -31,7 +31,7 @@ csv:
       spark_column_schema: "spark_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
       json_table_schema: "json_{{datastore_schema}}_{{dataset_name}}.json"
       json_column_schema: "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
-  datastores:
+  datasets:
     - name: "permissive"
       mode: "PERMISSIVE"
       columnNameOfCorruptRecord: null
