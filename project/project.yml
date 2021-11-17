@@ -1,0 +1,11 @@
+apiVersion: "yetl-framework.readthedocs.io/en/alpha1/project"
+
+datafeed_builds:
+
+  - metadata: tables_jaffle_shop.yml
+    datastore: jaffleshop_landing.yml/jaffleshop
+    dataset: dataset_csv.yml/default
+    
+  - metadata: tables_stripe.yml
+    datastore: jaffleshop_landing.yml/stripe
+    dataset: dataset_csv.yml/permissive

@@ -1,0 +1,14 @@
+apiVersion: "yetl-framework.readthedocs.io/en/alpha1/datastore"
+adls:
+  default:
+    name: "default"
+    description: "Landing ADLS store for {{datastore_name}}"
+    container: "landing"
+    schema: "default"
+    account: "adlsgeneva"
+  datastores:
+    - name: "jaffleshop"
+    - name: "stripe"
+      schema: "dbo"
+
+
