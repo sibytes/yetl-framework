@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/datastore_adls.schema.json",
+  "title": "Azure Datalake Store",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string" },
+    "adls": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "container": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "account": {
+          "type": "string"
+        },
+        "default_dataset_options": {
+            "$ref": "https://example.com/dataset_adls.schema.json" 
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "container",
+        "schema",
+        "account",
+        "default_dataset_options"
+      ]
+    }
+  },
+  "required": ["version", "adls"]
+}

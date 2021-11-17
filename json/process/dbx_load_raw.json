@@ -1,0 +1,25 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+  "id": "",
+  "sources": [
+    {
+      "id": ""
+    }
+  ],
+  "transforms": [{ "id": "", "order": "" }],
+  "destinations": [
+    {
+      "id": ""
+    }
+  ],
+  "dependencies" : {
+      "default_status" : "success",
+      "process_statuses" :
+      [
+        {   "process_id": "",
+            "status": "completed",
+            "operator": "and"
+        }
+      ]
+  }
+}

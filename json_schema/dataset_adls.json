@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/dataset_adls.schema.json",
+  "title": "Azure Data Lake Store Dataset",
+  "description": "ADLS data sets are basically files on HDFS. As such they have no built in schema so we enforce a schema by convention. Spark Schema are used for efficient reading, json schema's can also be used for json line data or json in columns for parsing and validation.",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string"
+    },
+    "read_options": {
+      "oneOf": [
+      { "$ref": "https://example.com/read_options_jsonl.schema.json" },
+      { "$ref": "https://example.com/read_options_jsonl.schema.csv" }
+      ]
+    },
+    "compression_type": {
+      "type": "string",
+      "enum": ["none"]
+    },
+    "encoding": {
+      "type": "string",
+      "enum": ["utf-8", "utf-16", "ascii"]
+    },
+    "days_retention_period": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "partition_path_format": {
+      "type": "string"
+    },
+    "partition_file_format": {
+      "type": "string"
+    },
+    "extension": {
+      "type": "string"
+    },
+    "dataset": {
+      "type": "string"
+    },
+    "path": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string",
+      "emum": ["permissive", "failfast", "dropmalformed"]
+    },
+    "columnNameOfCorruptRecord": {
+      "type": "string"
+    },
+    "bad_records_path": {
+      "type": "string"
+    },
+    "data_schema": {
+      "type": "object",
+      "properties": {
+        "spark_schema_path": {
+          "type": "string"
+        },
+        "spark_table_schema": {
+          "type": "string"
+        },
+        "spark_column_schema": {
+          "type": "string"
+        },
+        "json_table_schema": {
+          "type": "string"
+        },
+        "json_column_schema": {
+          "type": "string"
+        }
+      },
+      "required": ["spark_schema_path", "spark_table_schema"]
+    }
+  },
+  "required": [
+    "compression_type",
+    "encoding",
+    "days_retention_period",
+    "partition_path_format",
+    "partition_file_format",
+    "extension",
+    "format",
+    "dataset",
+    "path",
+    "mode",
+    "columnNameOfCorruptRecord",
+    "bad_records_path",
+    "data_schema"
+  ]
+}

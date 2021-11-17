@@ -1,0 +1,42 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+  "database_engine": "sql_server",
+  "tables": [
+    {
+      "schema": "dbo",
+      "table": "customer",
+      "description": "",
+      "columns": [
+        {
+          "column": "id",
+          "type": "int",
+          "nullable": false,
+          "description": "",
+          "ordinal": 1
+        },
+        {
+          "column": "firstname",
+          "type": "varchar(10)",
+          "nullable": false,
+          "description": "",
+          "ordinal": 2
+        },
+        {
+          "column": "surname",
+          "type": "varchar(10)",
+          "nullable": false,
+          "description": "",
+          "ordinal": 3
+        }
+      ],
+      "keys": ["id"],
+      "hash": [
+        { "name": "SCD1", "columns": "firstname", "function": "sha256" },
+        { "name": "SCD2", "columns": "surname", "function": "sha256" }
+      ],
+      "reconcile": {
+        "columns": []
+      }
+    }
+  ]
+}

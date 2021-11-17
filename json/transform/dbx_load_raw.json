@@ -1,0 +1,19 @@
+{
+    "version": "yetl-framework.readthedocs.io/en/alpha1/",
+    "id": "dbx_load_raw",
+    "type" : "databricks",
+    "subtype" : "notebook",
+    "namespace": "/yetl/jaffle_shop",
+    "name": "load_raw",
+    "description": "Generic process transformation that loads raw from landing",
+    "validation" :
+    {
+        "reconcile": true,
+        "exception_row_threshold_percent": 80,
+        "min_row_threshold": 1
+    },
+    "timeout_seconds": 2400,
+    "parameters": [
+        {"name" : "process_id", "type": "integer", "description": "queued process id that all the metadata is linked to"}
+    ]
+}

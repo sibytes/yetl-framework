@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/transformation_validation.schema.json",
+  "title": "Basic Transformation Validation Control",
+  "description": "",
+  "type": "object",
+  "properties": {
+    "reconcile": { "type": "boolean" },
+    "exception_row_threshold_percent": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "min_row_threshold": { "type": "integer", "minimum": 0 }
+  },
+  "required": [
+    "reconcile",
+    "exception_row_threshold_percent",
+    "min_row_threshold"
+  ]
+}

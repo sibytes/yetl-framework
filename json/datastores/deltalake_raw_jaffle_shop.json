@@ -1,0 +1,20 @@
+{
+  "version": "yetl-framework.readthedocs.io/en/alpha1/",
+
+  "deltalake": {
+    "name": "raw_jaffle_shop",
+    "description": "deltalake database raw copy of landing",
+    "default_dataset_options": {
+      "tablename": "{{schema}}_{{dataset}}",
+      "partition": ["partition"],
+      "exception_row_threshold_percent": 80,
+      "in_row_threshold": 1,
+      "timeout_seconds": 2400,
+      "mode": "overwrite",
+      "mergeschema": true,
+      "dbfs_root": "dbfs://mnt",
+      "storage_root": "abfss://mnt",
+      "path": "{{container}}/{{datastore}}/{{classification}}/{{schema}}/{{dataset}}"
+    }
+  }
+}
