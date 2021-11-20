@@ -1,0 +1,30 @@
+apiVersion: "yetl-framework.io/en/1/datastore"
+database_engine: "sql_server"
+tables:
+  - schema: "dbo"
+    table: "customer"
+    description: ""
+    columns:
+      - column: "id"
+        type: "int"
+        nullable: false
+        description: ""
+        ordinal: 1
+      - column: "firstname"
+        type: "varchar(10)"
+        nullable: false
+        description: ""
+        ordinal: 2
+      - column: "id"
+        type: "varchar(10)"
+        nullable: false
+        description: ""
+        ordinal: 3
+    unique_identifier: ["id"]
+    hashes:
+      - name: "SCD1"
+        columns: ["firstname"]
+        function: "sha256"
+      - name: "SCD2"
+        columns: ["surname"]
+        function: "sha256"

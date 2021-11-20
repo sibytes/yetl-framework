@@ -1,0 +1,100 @@
+sql_server:
+
+  - type: "bigint"
+    spark: "LongType"
+
+  - type: "numeric"
+    spark: "DecimalType"
+
+  - type: "bit"
+    spark: "BooleanType"
+
+  - type: "smallint"
+    spark: "ShortType"
+
+  - type: "decimal"
+    spark: "DecimalType"
+
+  - type: "smallmoney"
+    spark: "DecimalType"
+
+  - type: "int"
+    spark: "IntegerType"
+
+  - type: "tinyint"
+    spark: "ByteType"
+
+  - type: "money"
+    spark: "DecimalType"
+
+  - type: "float(25-53)"
+    spark: "DoubleType"
+
+  - type: "float(1-24)"
+    spark: "FloatType"
+
+  - type: "real(25-53)"
+    spark: "DoubleType"
+
+  - type: "real(1-24)"
+    spark: "FloatType"
+
+  - type: "date"
+    spark: "DateType"
+
+  - type: "datetimeoffset"
+    spark: "TimestampType"
+
+  - type: "datetime2"
+    spark: "TimestampType"
+
+  - type: "smalldatetime"
+    spark: "TimestampType"
+
+  - type: "datetime"
+    spark: "TimestampType"
+
+  - type: "time"
+    spark: "TimestampType"
+
+  - type: "char"
+    spark: "CharType"
+
+  - type: "varchar"
+    spark: "StringType"
+
+  - type: "text"
+    spark: "StringType"
+
+  - type: "nchar"
+    spark: "CharType"
+
+  - type: "nvarchar"
+    spark: "StringType"
+
+  - type: "ntext"
+    spark: "StringType"
+
+  - type: "binary"
+    spark: "BinaryType"
+
+  - type: "varbinary"
+    spark: "BinaryType"
+
+  - type: "image"
+    spark: "BinaryType"
+
+  - type: "rowversion"
+    spark: "BinaryType"
+
+  - type: "hierarchyid"
+    spark: "BinaryType"
+
+  - type: "uniqueidentifier"
+    spark: "StringType"
+
+  - type: "xml"
+    spark: "StringType"
+
+  - type: "geography"
+    spark: "BinaryType"
