@@ -130,3 +130,8 @@ dmypy.json
 
 
 .vscode
+.DS_Store
+
+
+# ignore database engines
+/source_databases/postgres/postgres/*
