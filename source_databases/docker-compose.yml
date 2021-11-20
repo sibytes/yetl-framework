@@ -1,0 +1,17 @@
+services:
+
+  postgres:
+    image: postgres
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: jaffle_shop
+      POSTGRES_PASSWORD: jaffle_shop
+      POSTGRES_DB: jaffle_shop
+    volumes: 
+      - ./postgres/postgres:/var/lib/postgresql/data
+      - ./postgres/db-init-scripts:/docker-entrypoint-initdb.d
+      - ./data:/jaffle_shop_data
+
