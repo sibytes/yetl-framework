@@ -36,7 +36,7 @@ Progress log:
 - Workflow engine
 - Auto document pipelines
 
-# Example Usage
+## Example Usage
 
 Once metadata is declared we can just create something like the following for a given dataset, many datasets or all datasets
 
