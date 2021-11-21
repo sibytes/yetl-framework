@@ -1,12 +1,12 @@
-apiVersion: "yetl-framework.io/en/1/dataset"
+apiVersion: yetl-framework.io/en/1/dataset
 deltalake:
   default:
-    id: "default"
+    id: default
     name: "{{datastore_schema}}_{{dataset_name}}"
     path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}"
     write_options: 
-      partition:
-        - "partition"
-      mode: "append"
+      partitions:
+        - partition
+      mode: append
       mergeschema: true
   datasets:

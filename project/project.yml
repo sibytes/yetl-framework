@@ -1,3 +1,2 @@
-apiVersion: "yetl-framework.io/en/1/project"
-
+apiVersion: yetl-framework.io/en/1/project
 metadata: ./project
