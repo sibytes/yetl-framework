@@ -13,7 +13,7 @@ environments:
         master: local[2]
         config: null
 
-  - environment: dvelopment
+  - environment: development
     project: dbfss://yetl/jaffle_shop/project
     secretstore:
       provider: databricks
