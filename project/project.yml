@@ -1,33 +1,3 @@
 apiVersion: "yetl-framework.io/en/1/project"
 
-datafeed_builds:
-
-  - metadata: tables_jaffle_shop.json
-    source_database: jaffle_shop
-    source_schema: jaffle_shop
-    datastore: landing.yml/jaffleshop
-    dataset: dataset_csv.yml/default
-    
-  - metadata: tables_jaffle_shop.json
-    source_database: jaffle_shop
-    source_schema: stripe
-    datastore: landing.yml/stripe
-    dataset: dataset_csv.yml/permissive
-
-  - metadata: tables_jaffle_shop.json
-    source_database: jaffle_shop
-    source_schema: jaffle_shop
-    datastore: deltalake.yml/raw_jaffleshop
-    dataset: dataset_deltalake.yml/default
-    
-  - metadata: tables_jaffle_shop.json
-    source_database: jaffle_shop
-    source_schema: stripe
-    datastore: deltalake.yml.yml/raw_stripe
-    dataset: dataset_deltalake.yml/default
-
-  - metadata: tables_jaffle_shop.json
-    source_database: jaffle_shop
-    source_schema: jaffle_shop
-    datastore: deltalake.yml.yml/jaffleshop
-    dataset: dataset_deltalake.yml/default
+metadata: ./project

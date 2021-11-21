@@ -1,24 +1,26 @@
-apiVersion: "yetl-framework.io/en/1/datastore"
+apiVersion: yetl-framework.io/en/1/datastore
 adls:
   default:
-    id: "default"
-    name: "default"
+    id: default
+    name: default
     description: "Deltalake store for {{datastore_name}}"
-    container: "default"
-    schema: "default"
-    account: "adlsgeneva"
+    container: default
+    schema: default
+    account: adlsgeneva
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
   datastores:
-    - id: "raw_jaffleshop"
-      name: "raw_jaffleshop"
-      container: "raw"
-    - id: "raw_stripe"
-      name: "raw_stripe"
-      container: "raw"
-    - id: "jaffleshop"
-      name: "jaffleshop"
-      container: "prepared"
+    - id: raw_jaffleshop_jaffleshop
+      name: raw_jaffleshop
+      schema: jaffleshop
+      container: raw
+    - id: raw_jaffleshop_stripe
+      name: raw_jaffleshop
+      schema: stripe
+      container: raw
+    - id: jaffleshop
+      name: jaffleshop
+      container: prepared
 
 
 
