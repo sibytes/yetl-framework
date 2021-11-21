@@ -12,7 +12,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="yetl-framework",
-    version="0.0.1",
+    version="0.0.2",
     # version_config={
     #     # "template": "{tag}",
     #     # "dev_template": "{tag}.post{ccount}+git.{sha}",
