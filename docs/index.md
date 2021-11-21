@@ -35,3 +35,49 @@ Progress log:
 - Integrate and support data expectation frameworks
 - Workflow engine
 - Auto document pipelines
+
+# Example Usage
+
+Once metadata is declared we can just create something like the following for a given dataset, many datasets or all datasets
+
+```python
+from pyspark.sql import Row, DataFrame, SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import StructField, StructType, StringType, LongType
+
+@yetl(dataset="customers")
+def yetl_test_dataset(spark:SparkSession):
+    # create test dataset
+
+    test_schema = StructType([
+    StructField("id", StringType(), True),
+    StructField("firstname", StringType(), True),
+    StructField("lastname", LongType(), True)
+    ])
+
+    test_rows = [Row(1, "Terry", "Merry"), 
+            Row(2, "Berry", "Gederry"), 
+            Row(3, "Larry", "Tarry")]
+
+    test_df = spark.createDataFrame(test_rows, test_schema)
+    return test_df
+
+@yetl(
+    src_datastore="raw_jaffle_shop",
+    src_dataset="customers",
+    dst_datastore="prepared_jaffle_shop",
+    dst_dataset="customers",
+    )
+def yetl_task(df:DataFrame):
+
+    # do stranformations
+    transformed_df = (df.withColumn("Full Name", 
+        concat_ws(" ", col("firstname"), col("lastname") ))
+    )
+    return df
+
+@yetl(dataset="customers")
+def yetl_test_asserts(df:DataFrame):
+    # do assertions
+    pass
+```
