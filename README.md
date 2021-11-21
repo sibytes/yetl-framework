@@ -47,7 +47,7 @@ Once metadata is declared we can just create something like the following for a 
 from pyspark.sql import Row, DataFrame, SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import StructField, StructType, StringType, LongType
-import yetl import task, test_dataset, test_assertion
+import yetl
 
 @yetl.test_dataset(dataset="customers")
 def yetl_test_dataset(spark:SparkSession):
