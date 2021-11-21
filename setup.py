@@ -12,7 +12,7 @@ README = (HERE / "README.md").read_text()
 # This call to setup() does all the work
 setup(
     name="yetl-framework",
-    version="0.0.2",
+    version="0.0.3",
     # version_config={
     #     # "template": "{tag}",
     #     # "dev_template": "{tag}.post{ccount}+git.{sha}",
@@ -31,7 +31,11 @@ setup(
     description="spark etl framework project",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/semanticinsight/yetl-framework",
+    url="https://yetl-framework.readthedocs.io/en/latest/",
+    project_urls={
+        'GitHub': 'https://github.com/semanticinsight/yetl-framework',
+        'Documentation': 'https://yetl-framework.readthedocs.io/en/latest/'
+    },
     author="Shaun Ryan",
     author_email="shaun_chiburi@hotmail.com",
     license="MIT",
