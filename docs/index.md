@@ -1,8 +1,7 @@
-# YETL Framework - It's for Spark!
+# YETL Framework
 
-**Y**et another **ETL** **F**ramework for Spark
+Yet another ETL Framework for Spark
 
-https://yetl-framework.readthedocs.io/en/latest/
 
 How does it work?
 
@@ -17,4 +16,17 @@ Declaritive spark dataframe pipelining frameworking.
 Progress log:
 
 * 2021-11-21: Done : Metadata design 1st draft prototype
-* WIP: Jinja2 Templating and Deserialization: Done
+* WIP: Jinja2 Templating and Deserialization: WIP
+
+## Goals
+
+- Have fun learning and building something that has no affiliation to anything commercial
+- Easy and fun to engineer pipelines
+- Can be used in spark everywhere (Spark PaaS, IaaS, baremetal, locally)
+- Bar landing the data in the cloud spark is all we need
+- Excellent metadata configuration and tools - fun, simple, full featured and minimal
+- No data loading anti-patterns resulting from poorly designed re-use and metadata
+- Can be called if desired seamlessly from any workflow tool integrating transparent lineage
+- Fully and easily testable locally and remotely
+- Support batch and streaming
+- Support datalake house add-on's - hudi, deltalake
