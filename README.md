@@ -47,8 +47,9 @@ Once metadata is declared we can just create something like the following for a 
 from pyspark.sql import Row, DataFrame, SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import StructField, StructType, StringType, LongType
+import yetl import task, test_dataset, test_assertion
 
-@yetl(dataset="customers")
+@yetl.test_dataset(dataset="customers")
 def yetl_test_dataset(spark:SparkSession):
     # create test dataset
 
@@ -65,7 +66,7 @@ def yetl_test_dataset(spark:SparkSession):
     test_df = spark.createDataFrame(test_rows, test_schema)
     return test_df
 
-@yetl(
+@yetl.pipeline(
     src_datastore="raw_jaffle_shop",
     src_dataset="customers",
     dst_datastore="prepared_jaffle_shop",
@@ -79,7 +80,7 @@ def yetl_task(df:DataFrame):
     )
     return df
 
-@yetl(dataset="customers")
+@yetl.test_assertion(dataset="customers")
 def yetl_test_asserts(df:DataFrame):
     # do assertions
     pass
