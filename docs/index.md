@@ -32,7 +32,7 @@ Progress log:
 - Support datalake house add-on's - hudi, deltalake
 
 
-# Feature Goals
+## Feature Goals
 
 
 - Extremely Flexible
