@@ -23,21 +23,15 @@ Progress log:
 - Have fun learning and building something that has no affiliation to anything commercial
 - Easy and fun to engineer pipelines
 - Can be used in spark everywhere (Spark PaaS, IaaS, baremetal, locally)
-- Bar landing the data in the cloud spark is all we need
+- Bar landing the data into HDFS (prem or cloud) spark is all we need
 - Excellent metadata configuration and tools - fun, simple, full featured and minimal
 - No data loading anti-patterns resulting from poorly designed re-use and metadata
 - Can be called if desired seamlessly from any workflow tool integrating transparent lineage
-- Fully and easily testable locally and remotely
 - Support batch and streaming
 - Support datalake house add-on's - hudi, deltalake
-
-
-## Feature Goals
-
-
-- Extremely Flexible
-- Support Behavior Driven Development
-- Support Test Driven Developement
-- Integrate and Support Data Expectation Frameworks
-- Workflow Engine
-- Auto Document Pipelines
+- Extremely flexible
+- Support behavior driven development
+- Support test driven developement - Locally, CI/CD agent and remote envs
+- Integrate and support data expectation frameworks
+- Workflow engine
+- Auto document pipelines
