@@ -4,8 +4,13 @@ from pyspark.sql.types import StructField, StructType, StringType, LongType
 from yetl.yetl import Yetl
 
 
-def get_test_customer_df(spark:SparkSession):
+def get_test_customer_df(): #(spark:SparkSession):
     # create test dataset
+    spark = (SparkSession
+            .builder
+            .master("local")
+            .appName("Spark SQL basic example")
+            .getOrCreate())
 
     test_schema = StructType([
         StructField("id", StringType(), True),
@@ -21,7 +26,7 @@ def get_test_customer_df(spark:SparkSession):
     return test_df
 
 
-@Yetl.transform
+@Yetl.transform(test_df=get_test_customer_df)
 def transform_customer(df:DataFrame=None):
 
     # do stranformations
