@@ -1,6 +1,6 @@
 from pyspark.sql import Row, DataFrame, SparkSession
 from pyspark.sql.functions import *
-from pyspark.sql.types import StructField, StructType, StringType, LongType
+from pyspark.sql.types import *
 from yetl.yetl import Yetl
 
 
@@ -12,21 +12,29 @@ def get_test_customer_df(): #(spark:SparkSession):
             .appName("Spark SQL basic example")
             .getOrCreate())
 
-    test_schema = StructType([
+    schema = StructType([
         StructField("id", StringType(), True),
         StructField("firstname", StringType(), True),
         StructField("lastname", StringType(), True)
     ])
 
-    test_rows = [Row(1, "Terry", "Merry"), 
+    rows = [Row(1, "Terry", "Merry"), 
             Row(2, "Berry", "Gederry"), 
             Row(3, "Larry", "Tarry")]
 
-    test_df = spark.createDataFrame(test_rows, test_schema)
-    return test_df
+    df = spark.createDataFrame(rows, schema)
+    return df
 
 
-@Yetl.transform(test_df=get_test_customer_df)
+def transform_customer_assert(df:DataFrame):
+    # do assertions
+    assert True
+
+
+@Yetl.transform(
+    test_df=get_test_customer_df,
+    test_assert=transform_customer_assert
+    )
 def transform_customer(df:DataFrame=None):
 
     # do stranformations
@@ -35,11 +43,6 @@ def transform_customer(df:DataFrame=None):
     )
     return transformed_df
 
-
-
-def transform_customer_assert(df:DataFrame):
-    # do assertions
-    pass
 
 
 if __name__ == "__main__":
