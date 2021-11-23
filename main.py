@@ -4,7 +4,6 @@ from pyspark.sql.types import StructField, StructType, StringType, LongType
 from yetl.yetl import Yetl
 
 
-# # @yetl.test_dataset(dataset="customers")
 def get_test_customer_df(spark:SparkSession):
     # create test dataset
 
@@ -32,21 +31,13 @@ def transform_customer(df:DataFrame=None):
     return transformed_df
 
 
-# # @yetl.test_assertion(dataset="customers")
-# def yetl_test_asserts(df:DataFrame):
-#     # do assertions
-#     pass
+
+def transform_customer_assert(df:DataFrame):
+    # do assertions
+    pass
 
 
 if __name__ == "__main__":
 
-    # spark = (SparkSession
-    #         .builder
-    #         .master("local[2]")
-    #         .appName("Spark SQL basic example")
-    #         .getOrCreate())
-
-    # df = get_test_customer_df(spark)
-
-    df = transform_customer(None)
+    df = transform_customer()
     df.show()
