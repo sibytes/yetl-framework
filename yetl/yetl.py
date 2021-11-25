@@ -1,10 +1,14 @@
 import functools
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, SparkSession
+from types import FunctionType
 
 class Yetl():
 
 
-    def transform(test_df:DataFrame):
+    def transform(
+        test_df:FunctionType,
+        test_assert:FunctionType = None
+    ):
         def decorator(func):
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
@@ -16,9 +20,15 @@ class Yetl():
                         )
                         or (args and not args[0])
                     ):
-                    return func(test_df())
+                    ret = func(test_df())
                 else:
-                    return func(*args, **kwargs)
+                    ret = func(*args, **kwargs)
+
+                if test_assert:
+                    test_assert(ret)
+                
+                return ret
 
             return wrapper
         return decorator
+

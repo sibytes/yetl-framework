@@ -5,6 +5,7 @@ from yetl.yetl import Yetl
 
 
 def get_test_customer_df(): #(spark:SparkSession):
+
     # create test dataset
     spark = (SparkSession
             .builder
@@ -28,17 +29,25 @@ def get_test_customer_df(): #(spark:SparkSession):
 
 def transform_customer_assert(df:DataFrame):
     # do assertions
-    assert True
+    fullnames = [data[0] for data in df.select("fullname").collect()]
+    assert fullnames == ["Terry Merry", "Berry Gederry", "Larry Tarry"]
 
-
+# so the idea is that we're going to use decorators
+# to add environment spark configuration to spark 
+# code that run anywhere e.g. cloud, local, bare metal
+# also we want to manipulate the df that gets passed in
+# in local it's handy to DF's from test data defined so I can just TDD a spark function
+# when I deploy though it need to chain the DF's together in a pipline.
 @Yetl.transform(
     test_df=get_test_customer_df,
+    # could use this approach to compose data expectations.
+    # here am just doing a simple assert
     test_assert=transform_customer_assert
     )
 def transform_customer(df:DataFrame=None):
 
     # do stranformations
-    transformed_df = (df.withColumn("Full Name", 
+    transformed_df = (df.withColumn("fullname", 
         concat_ws(" ", col("firstname"), col("lastname") ))
     )
     return transformed_df
