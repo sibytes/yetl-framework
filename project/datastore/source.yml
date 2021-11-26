@@ -11,8 +11,8 @@ sql_server:
     description: "Source transactional database store for {{datastore_name}}"
     server: localhost
     port: 5432
-    user: "{{secrets.jaffle_shop_sqlserver_password}}"
-    password: 
+    user: "yetl"
+    password: "{{secrets.jaffle_shop_sqlserver_password}}"
 
   datastores:
     - id: jaffle_shop
