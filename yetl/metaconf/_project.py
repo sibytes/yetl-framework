@@ -6,8 +6,13 @@ from ._exceptions import (
     ProjectDirectoryNotExists
 )
 
-
 class Project:
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
+class ProjectDeprecated:
     
     def __init__(
         self,

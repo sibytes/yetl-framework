@@ -3,6 +3,7 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from yetl.yetl import Yetl
 from yetl.serialiser.deserialiser import deserialise
+from yetl.metaconf import Project
 
 
 def get_test_customer_df(): #(spark:SparkSession):
@@ -57,10 +58,12 @@ def transform_customer(df:DataFrame=None):
 import yaml
 if __name__ == "__main__":
     
-    with open("./project/table_mapping.yml", "r") as f:
+    with open("./project/project.yml", "r") as f:
         project_dict = yaml.safe_load(f)
 
-    deserialise(project_dict)
+    project:Project = deserialise("project", project_dict)
+
+    print(project.__dict__)
 
     # df = transform_customer()
     # df.show()
