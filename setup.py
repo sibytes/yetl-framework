@@ -45,6 +45,6 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     packages=["yetl"],
-    install_requires=["pyyaml","jinja2"],
+    install_requires=["pyyaml","jinja2","pyspark","pydantic"],
     zip_safe=False
 )

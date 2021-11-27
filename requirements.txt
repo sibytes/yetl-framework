@@ -24,8 +24,11 @@ pkginfo==1.7.1
 platformdirs==2.4.0
 pluggy==1.0.0
 py==1.11.0
+py4j==0.10.9.2
+pydantic==1.8.2
 Pygments==2.10.0
 pyparsing==2.4.7
+pyspark==3.2.0
 pytest==6.2.5
 pytest-cov==3.0.0
 pytest-env==0.6.2
@@ -49,4 +52,5 @@ typing_extensions==4.0.0
 urllib3==1.26.7
 watchdog==2.1.6
 webencodings==0.5.1
+-e git+ssh://git@github.com/semanticinsight/yetl-framework.git@acf6232cbec4a7f13f55ea79b047a4ab3d09ee42#egg=yetl_framework
 zipp==3.6.0
