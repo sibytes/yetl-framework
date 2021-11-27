@@ -10,7 +10,7 @@ adls:
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
   datastores:
-    - id: landing_jaffleshop_jafflshop
+    - id: landing_jaffleshop_jaffleshop
       schema: jaffleshop
     - id: landing_jafflshop_stripe
       schema: stripe

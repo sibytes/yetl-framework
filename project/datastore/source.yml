@@ -80,7 +80,7 @@ sql_server:
     - id: jaffle_shop
       schema: stripe
       tables: 
-        - table: paymenrs
+        - table: payments
           columns:
             - column: id
               type: int

@@ -1,0 +1,46 @@
+apiVersion: yetl-framework.io/en/1/table_mapping
+# this optional for declaring and code generating specific tables mappings
+# it is not required however. Loading lineage is gathered from the spark
+# DSL not this mapping. Dependencies like this are overly verbose so
+# depends if you like writing yaml or just the python dsl.
+# note we can acheive the same thing in python by wrapping generic dsl in a
+# table operator.
+table_mapping:
+
+    - id: raw_jaffleshop_jaffleshop
+      schema: jafflshop
+      tables: 
+        - table: customers
+          dependecies:
+            - id: landing_jaffleshop_jaffleshop
+              schema: jaffle_shop
+              table: customers
+        - table: orders
+          dependecies:
+            - id: landing_jaffleshop_jaffleshop
+              schema: jaffle_shop
+              table: customers
+        - table: payments
+          dependecies:
+            - id: landing_jaffleshop_jaffleshop
+              schema: strip
+              table: payments
+
+    - id: landing_jaffleshop_jaffleshop
+      schema: jafflshop
+      tables: 
+        - table: customers
+          dependecies:
+            - id: jaffle_shop
+              schema: jaffle_shop
+              table: customers
+        - table: orders
+          dependecies:
+            - id: jaffle_shop
+              schema: jaffle_shop
+              table: customers
+        - table: payments
+          dependecies:
+            - id: jaffle_shop
+              schema: strip
+              table: payments
