@@ -1,6 +1,6 @@
 import argparse
-from .metaconf.project import Project
-from .metaconf.logging import getLogger
+from .metaconf import Project
+from .logging import getLogger
 import os
 
 

@@ -1,9 +1,8 @@
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
-from .secret_store import SecretStore
+from ._secret_store import SecretStore
 
-class Environment(BaseModel):
+class Environment():
     
     environment: str
     project: str

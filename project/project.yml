@@ -2,29 +2,27 @@ apiVersion: yetl-framework.io/en/1/project
 
 environments:
 
-  - environment: local
+  - name: local
     project: ./project
     secretstore:
       provider: local
       # important: in real projects ensure this file is in .gitignore
       store: ./project/secrets.yml
-    spark:
-      foss:
-        master: local[2]
-        config: null
+    foss:
+      master: local[2]
+      config: null
 
-  - environment: development
+  - name: development
     project: dbfss://yetl/jaffle_shop/project
     secretstore:
       provider: databricks
       # databricks scope that holds the secrets
       # can be keyvault backed
       store: kv_dataplatform
-    spark:
-      azure_databricks:
-        workspace_url: ttps://adb-8723178682600000.0.azuredatabricks.net/
-        org_id: 8723178682600000
-        # secret that holds the token
-        token: databricks_pat
-        port: 5554
-        cluster: 0921-001415-jelly628
+    azure_databricks:
+      workspace_url: ttps://adb-8723178682600000.0.azuredatabricks.net/
+      org_id: 8723178682600000
+      # secret that holds the token
+      token: databricks_pat
+      port: 5554
+      cluster: 0921-001415-jelly628

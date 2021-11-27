@@ -1,7 +1,7 @@
 import os
-from logging import getLogger
+from ..logging import getLogger
 import yaml
-from .exceptions import (
+from ._exceptions import (
     ProjectDirectoryNotSet,
     ProjectDirectoryNotExists
 )
