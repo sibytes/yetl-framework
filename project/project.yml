@@ -4,18 +4,16 @@ environments:
 
   - name: local
     project: ./project
-    secretstore:
-      provider: local
+    secrets_file:
       # important: in real projects ensure this file is in .gitignore
-      store: ./project/secrets.yml
-    foss:
+      path: ./project/secrets.yml
+    standard_spark:
       master: local[2]
       config: null
 
   - name: development
     project: dbfss://yetl/jaffle_shop/project
-    secretstore:
-      provider: databricks
+    databricks_scope:
       # databricks scope that holds the secrets
       # can be keyvault backed
       store: kv_dataplatform
