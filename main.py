@@ -63,7 +63,6 @@ if __name__ == "__main__":
 
     project:Project = deserialise("project", project_dict)
 
-    print(project.__dict__)
 
     # df = transform_customer()
     # df.show()

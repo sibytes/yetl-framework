@@ -1,5 +1,5 @@
-# from ..metaconf import Project
 from .types import types
+
 
 def deserialise(name: str, data: dict):
 
@@ -8,40 +8,52 @@ def deserialise(name: str, data: dict):
 
 def _deserialise_dict(name: str, data: dict):
 
-    type_ref = types.get(name)
+    type_ref = types[name]
     if isinstance(type_ref["type"], str):
         d_class = _class_factory(type_ref["type"], data, type_ref["base"])
     else:
         d_class = type_ref["type"]
-    
+
     args = {}
     for k, v in data.items():
 
         if isinstance(v, dict):
-            _deserialise_dict(k, v)
+            t = _deserialise_dict(k, v)
+            name = types[k]["name"]
+            args[name] = t
+
         elif isinstance(v, list):
-            _deserialise_list(k, v)
+            l = _deserialise_list(k, v)
+            name = types[k]["name"]
+            args[name] = l
         else:
             args[k] = v
 
-    d_instance = d_class(**data)
+    d_instance = d_class(**args)
 
     return d_instance
 
-# TODO
+
 def _deserialise_list(name: str, data: list):
-    pass 
-    # list_type = name[:-1]
-    # print(f"\t{name}:List[{list_type}] = list()")
 
-    # for v in data:
+    list_type_ref = types[name]
 
-    #     if isinstance(v, dict):
-    #         deserialise_dict(list_type, v)
-    #     elif isinstance(v, list):
-    #         deserialise_list(name, v)
-    #     else:
-    #         print(f"\t\t{name}.append({v})")
+    # create the list
+    list:list_type_ref["type"] = []
+
+    for v in data:
+        if isinstance(v, dict):
+            t = _deserialise_dict(list_type_ref["items"], v)
+            list.append(t)
+
+        elif isinstance(v, list):
+            l = _deserialise_list(list_type_ref["items"], v)
+            list.append(l)
+
+        else:
+            list.append(v)
+
+    return list
 
 
 def _class_factory(class_name: str, arg_names: dict, base_classes=(object)):
@@ -52,7 +64,6 @@ def _class_factory(class_name: str, arg_names: dict, base_classes=(object)):
                     f"Argument {key} not valid for {self.__class__.__name__}"
                 )
             setattr(self, key, value)
-
 
     new_class = type(class_name, base_classes, {"__init__": __init__})
 

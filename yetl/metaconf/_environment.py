@@ -1,10 +1,9 @@
-from datetime import datetime
-from typing import List, Optional
-from ._secret_store import SecretStore
 
 class Environment():
-    
-    environment: str
-    project: str
-    secret_store: SecretStore
 
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    # def __init__(self, name:str, project:str, secrets:) -> None:
+        

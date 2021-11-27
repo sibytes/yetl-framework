@@ -1,27 +1,28 @@
 import os
 from ..logging import getLogger
 import yaml
-from ._exceptions import (
-    ProjectDirectoryNotSet,
-    ProjectDirectoryNotExists
-)
+from ._exceptions import ProjectDirectoryNotSet, ProjectDirectoryNotExists
+from typing import List
+from ._environment import Environment
+
 
 class Project:
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+    # def __init__(self, **kwargs):
+    #     for key, value in kwargs.items():
+    #         setattr(self, key, value)
+
+    def __init__(self, apiVersion: str, environments: List[Environment]) -> None:
+        self.environments = environments
+        self.apiVersion = apiVersion
 
 
 class ProjectDeprecated:
-    
-    def __init__(
-        self,
-        project_path: str,
-        project_path_is_variable: bool
-    ):
+    def __init__(self, project_path: str, project_path_is_variable: bool):
 
-        logger = getLogger( __name__)
-        logger.info(f"building project path={project_path}, path_is_variable={project_path_is_variable}")
+        logger = getLogger(__name__)
+        logger.info(
+            f"building project path={project_path}, path_is_variable={project_path_is_variable}"
+        )
 
         self.directory = self._get_source_directory(
             project_path, project_path_is_variable
@@ -32,11 +33,7 @@ class ProjectDeprecated:
 
         logger.info(project_dict)
 
-
-
-    def _get_source_directory(
-        self, project_path: str, project_path_is_variable: bool
-    ):
+    def _get_source_directory(self, project_path: str, project_path_is_variable: bool):
 
         """Validate and the project directory property.
         Sets the project directory validating that either a valid path has been provided
@@ -60,7 +57,6 @@ class ProjectDeprecated:
 
         directory = os.path.abspath(directory)
         return directory
-
 
     def _load_project(self):
 
