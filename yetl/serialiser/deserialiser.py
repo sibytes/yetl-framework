@@ -1,4 +1,4 @@
-from .types import types
+from ._types import types
 
 
 def deserialise(name: str, data: dict):

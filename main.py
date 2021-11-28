@@ -1,6 +1,7 @@
 from pyspark.sql import Row, DataFrame, SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
+from yetl.serialiser.serialiser import serialise, Format
 from yetl.yetl import Yetl
 from yetl.serialiser.deserialiser import deserialise
 from yetl.metaconf import Project
@@ -62,7 +63,12 @@ if __name__ == "__main__":
         project_dict = yaml.safe_load(f)
 
     project:Project = deserialise("project", project_dict)
+    data = serialise(project, Format.YAML)
 
+    # print(type(project.environments[1].spark))
+    project_dict = yaml.safe_load(data)
+    project:Project = deserialise("project", project_dict)
+    print(project.environments[0].name)
 
     # df = transform_customer()
     # df.show()
