@@ -19,6 +19,7 @@ Declaritive spark dataframe pipelining frameworking.
 Progress log:
 
 * 2021-11-21: Done : Metadata design 1st draft prototype
+* 2021-11-28: Done : Dynamic config API deserialiser
 * WIP: Jinja2 Templating and Deserialization: WIP
 * WIP: Proto-typing decorator model: WIP
 
@@ -50,10 +51,12 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from yetl.yetl import Yetl
 
-@Yetl.spark
-def get_test_customer_df(spark:SparkSession):
-    
-    # create test dataset
+
+@Yetl.spark(
+    path = "./project"
+)
+def get_customer(spark:SparkSession = None):
+
     schema = StructType([
         StructField("id", StringType(), True),
         StructField("firstname", StringType(), True),
@@ -70,20 +73,27 @@ def get_test_customer_df(spark:SparkSession):
 
 def transform_customer_assert(df:DataFrame):
     # do assertions
-    assert True
+    fullnames = [data[0] for data in df.select("fullname").collect()]
+    assert fullnames == ["Terry Merry", "Berry Gederry", "Larry Tarry"]
 
 
 @Yetl.transform(
-    test_df=get_test_customer_df,
-    test_assert=transform_customer_assert
+    df_function=get_customer,
+    assert_function=transform_customer_assert
     )
 def transform_customer(df:DataFrame=None):
 
-    # do stranformations
-    transformed_df = (df.withColumn("Full Name", 
+    # do tranformations
+    transformed_df = (df.withColumn("fullname", 
         concat_ws(" ", col("firstname"), col("lastname") ))
     )
     return transformed_df
+
+
+if __name__ == "__main__":
+    
+    df = transform_customer()
+    df.show()
 ```
 
 

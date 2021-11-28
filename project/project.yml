@@ -6,9 +6,10 @@ environments:
     project: ./project
     secrets_file:
       # important: in real projects ensure this file is in .gitignore
-      path: ./project/secrets.yml
-    standard_spark:
+      path: ./project/secrets.yml 
+    spark:
       master: local[2]
+      app_name: yetl_local
       config: null
 
   - name: development
@@ -17,10 +18,7 @@ environments:
       # databricks scope that holds the secrets
       # can be keyvault backed
       store: kv_dataplatform
-    azure_databricks:
-      workspace_url: ttps://adb-8723178682600000.0.azuredatabricks.net/
-      org_id: 8723178682600000
-      # secret that holds the token
-      token: databricks_pat
-      port: 5554
-      cluster: 0921-001415-jelly628
+    spark:
+      master: local[*]
+      app_name: yetl_development
+      config: null

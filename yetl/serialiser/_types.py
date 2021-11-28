@@ -25,6 +25,5 @@ types = {
         "type": "DatabricksScope",
         "base": tuple([SecretStore]),
     },
-    "standard_spark": {"name": "standard_spark", "type": "StandardSpark", "base": tuple([Spark])},
-    "azure_databricks": {"name": "azure_databricks", "type": "AzureDatabricks", "base": tuple([Spark])},
+    "spark": {"name": "spark", "type": "StandardSpark", "base": tuple([Spark])},
 }
