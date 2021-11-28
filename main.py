@@ -65,7 +65,7 @@ if __name__ == "__main__":
     project:Project = deserialise("project", project_dict)
     data = serialise(project, Format.YAML)
 
-    # print(type(project.environments[1].spark))
+    print(data)
     project_dict = yaml.safe_load(data)
     project:Project = deserialise("project", project_dict)
     print(project.environments[0].name)
