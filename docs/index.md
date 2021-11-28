@@ -44,52 +44,54 @@ Progress log:
 Once metadata is declared we can just create something like the following for a given dataset, many datasets or all datasets
 
 ```python
-from pyspark.sql import Row, DataFrame, SparkSession
+from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
-from yetl.yetl import Yetl
+import yetl
 
 
-@Yetl.spark(
-    path = "./project"
+@yetl.process(
+    dataset="customer",
+    source_datastore="landing_jaffleshop_jaffleshop.jaffleshop",
+    destination_datastore="raw_jaffleshop_jaffleshop.jaffleshop",
 )
-def get_customer(spark:SparkSession = None):
-
-    schema = StructType([
-        StructField("id", StringType(), True),
-        StructField("firstname", StringType(), True),
-        StructField("lastname", StringType(), True)
-    ])
-
-    rows = [Row(1, "Terry", "Merry"), 
-            Row(2, "Berry", "Gederry"), 
-            Row(3, "Larry", "Tarry")]
-
-    df = spark.createDataFrame(rows, schema)
-    return df
-
-
-def transform_customer_assert(df:DataFrame):
-    # do assertions
-    fullnames = [data[0] for data in df.select("fullname").collect()]
-    assert fullnames == ["Terry Merry", "Berry Gederry", "Larry Tarry"]
-
-
-@Yetl.transform(
-    df_function=get_customer,
-    assert_function=transform_customer_assert
-    )
-def transform_customer(df:DataFrame=None):
+def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
 
     # do tranformations
-    transformed_df = (df.withColumn("fullname", 
-        concat_ws(" ", col("firstname"), col("lastname") ))
+    desination_df = source_df
+    return desination_df
+
+
+@yetl.process(
+    dataset="customer",
+    source_datastore="raw_jaffleshop_jaffleshop.jaffleshop",
+    destination_datastore="jaffleshop",
+)
+def load_customer_into_prepared_1(spark: SparkSession, source_df: DataFrame):
+
+    # do tranformations
+    desination_df_1 = source_df
+    desination_df_2 = load_customer_into_prepared_2(desination_df_1)
+
+    return desination_df_2
+
+
+def load_customer_into_prepared_2(spark: SparkSession, source_df: DataFrame):
+
+    # do tranformations
+    desination_df = source_df.withColumn(
+        "fullname", concat_ws(" ", col("firstname"), col("lastname"))
     )
-    return transformed_df
+    return desination_df
 
 
 if __name__ == "__main__":
-    
-    df = transform_customer()
-    df.show()
+
+    project = yetl.builder()
+    # if transform methods are called without a yetl process
+    # the decorator passthroughs should bypass
+    # this allows the framework spark to be testable.
+    project.process(
+        destination_datastore="raw_jaffleshop_jaffleshop", dataset="customer"
+    )
 ```
