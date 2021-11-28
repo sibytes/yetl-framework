@@ -90,12 +90,13 @@ def load_customer_into_prepared_2(spark: SparkSession, source_df: DataFrame):
 
 if __name__ == "__main__":
 
-    project = yetl.builder()
+    project = yetl.builder.create_project()
     # if transform methods are called without a yetl process
     # the decorator passthroughs should bypass
     # this allows the framework spark to be testable.
+    # Process by destination object. It just figures out what it needs to process
     project.process(
-        datastore="raw_jaffleshop_jaffleshop", dataset="customer"
+        datastore="jaffleshop", datasets="customer", process_dependencies=True
     )
 ```
 
