@@ -4,6 +4,7 @@ from types import FunctionType
 from .metaconf import Project
 from .serialiser import deserialise
 import yaml
+import inspect
 
 class Yetl():
 
@@ -24,17 +25,21 @@ class Yetl():
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
 
-                project = Yetl.builder(path)
-                spark = project.environments[0].spark
+                if "spark" in inspect.getfullargspec(func).args:
 
-                # create test dataset
-                spark = (SparkSession
-                        .builder
-                        .master(spark.master)
-                        .appName(spark.app_name)
-                        .getOrCreate())
+                    project = Yetl.builder(path)
+                    spark = project.environments[0].spark
 
-                ret = func(spark)
+                    # create test dataset
+                    spark = (SparkSession
+                            .builder
+                            .master(spark.master)
+                            .appName(spark.app_name)
+                            .getOrCreate())
+
+                    kwargs["spark"] = spark
+
+                ret = func(*args, **kwargs)
                 
                 return ret
 
@@ -42,10 +47,8 @@ class Yetl():
         return decorator
 
 
-
-
     def transform(
-        df_function:FunctionType,
+        source_df:FunctionType,
         assert_function:FunctionType = None
     ):
         def decorator(func):
@@ -59,7 +62,7 @@ class Yetl():
                         )
                         or (args and not args[0])
                     ):
-                    ret = func(df_function(None))
+                    ret = func(source_df())
                 else:
                     ret = func(*args, **kwargs)
 

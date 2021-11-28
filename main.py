@@ -30,10 +30,10 @@ def transform_customer_assert(df:DataFrame):
 
 
 @Yetl.transform(
-    df_function=get_customer,
+    source_df=get_customer,
     assert_function=transform_customer_assert
     )
-def transform_customer(df:DataFrame=None):
+def transform_customer(df:DataFrame = None):
 
     # do tranformations
     transformed_df = (df.withColumn("fullname", 
