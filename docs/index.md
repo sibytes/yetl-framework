@@ -52,8 +52,8 @@ import yetl
 
 @yetl.process(
     dataset="customer",
-    source="landing_jaffleshop_jaffleshop.jaffleshop",
-    destination="raw_jaffleshop_jaffleshop.jaffleshop",
+    source="landing_jaffleshop",
+    destination="raw_jaffleshop",
 )
 def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
 
@@ -64,7 +64,7 @@ def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
 
 @yetl.process(
     dataset="customer",
-    source="raw_jaffleshop_jaffleshop.jaffleshop",
+    source="raw_jaffleshop",
     destination="jaffleshop",
 )
 def load_customer_into_prepared_1(spark: SparkSession, source_df: DataFrame):
