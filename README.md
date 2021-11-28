@@ -20,8 +20,9 @@ Progress log:
 
 * 2021-11-21: Done : Metadata design 1st draft prototype
 * 2021-11-28: Done : Dynamic config API deserialiser
-* WIP: Jinja2 Templating and Deserialization: WIP
-* WIP: Proto-typing decorator model: WIP
+* 2021-11-28: Done : Pipeline DSL Draft
+* TODO: Jinja2 Templating and Deserialization
+* WIP: Proto-typing decorator model
 
 ## Philosophical Goals
 
