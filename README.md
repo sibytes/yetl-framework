@@ -54,8 +54,8 @@ import yetl
 
 @yetl.process(
     dataset="customer",
-    source_datastore="landing_jaffleshop_jaffleshop.jaffleshop",
-    destination_datastore="raw_jaffleshop_jaffleshop.jaffleshop",
+    source="landing_jaffleshop_jaffleshop.jaffleshop",
+    destination="raw_jaffleshop_jaffleshop.jaffleshop",
 )
 def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
 
@@ -66,8 +66,8 @@ def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
 
 @yetl.process(
     dataset="customer",
-    source_datastore="raw_jaffleshop_jaffleshop.jaffleshop",
-    destination_datastore="jaffleshop",
+    source="raw_jaffleshop_jaffleshop.jaffleshop",
+    destination="jaffleshop",
 )
 def load_customer_into_prepared_1(spark: SparkSession, source_df: DataFrame):
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     # the decorator passthroughs should bypass
     # this allows the framework spark to be testable.
     project.process(
-        destination_datastore="raw_jaffleshop_jaffleshop", dataset="customer"
+        datastore="raw_jaffleshop_jaffleshop", dataset="customer"
     )
 ```
 
