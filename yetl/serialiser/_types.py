@@ -1,5 +1,5 @@
 from ..metaconf import *
-from typing import List
+from typing import List, Dict
 """Holds a type dictionary that is used to map complex deserialisations
 
 Our deserialisation needs are complex and this dictionary just helps
@@ -25,5 +25,5 @@ types = {
         "type": "DatabricksScope",
         "base": tuple([SecretStore]),
     },
-    "spark": {"name": "spark", "type": "StandardSpark", "base": tuple([Spark])},
+    "spark": {"name": "spark", "type": Spark, "base": tuple([_Spark])},
 }

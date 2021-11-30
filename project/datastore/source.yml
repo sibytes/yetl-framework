@@ -77,7 +77,7 @@ sql_server:
           watermarks: [_etl_loaded_at]
           partitioning: []
 
-    - id: jaffle_shop
+    - id: jaffle_shop_stripe
       schema: stripe
       tables: 
         - table: payments

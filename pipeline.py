@@ -2,14 +2,16 @@ from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 import yetl
+from yetl.yetl import Yetl
 
+yetl = Yetl()
 
 @yetl.process(
     dataset="customer",
     source="landing_jaffleshop",
     destination="raw_jaffleshop",
 )
-def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
+def load_customer_into_raw(source_df: DataFrame):
 
     # do tranformations
     desination_df = source_df
@@ -21,7 +23,7 @@ def load_customer_into_raw(spark: SparkSession, source_df: DataFrame):
     source="raw_jaffleshop",
     destination="jaffleshop",
 )
-def load_customer_into_prepared_1(spark: SparkSession, source_df: DataFrame):
+def load_customer_into_prepared_1(source_df: DataFrame):
 
     # do tranformations
     desination_df_1 = source_df
@@ -30,7 +32,7 @@ def load_customer_into_prepared_1(spark: SparkSession, source_df: DataFrame):
     return desination_df_2
 
 
-def load_customer_into_prepared_2(spark: SparkSession, source_df: DataFrame):
+def load_customer_into_prepared_2(source_df: DataFrame):
 
     # do tranformations
     desination_df = source_df.withColumn(

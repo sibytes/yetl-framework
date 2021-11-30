@@ -5,42 +5,82 @@ apiVersion: yetl-framework.io/en/1/table_mapping
 # depends if you like writing yaml or just the python dsl.
 # note we can acheive the same thing in python by wrapping generic dsl in a
 # table operator.
-table_mapping:
+data_set_mapping:
+    - id: landing_jaffleshop
+      dependencies:
+          id: jaffle_shop
 
-    - id: raw_jaffleshop_jaffleshop
-      schema: jafflshop
-      tables: 
-        - table: customers
-          dependecies:
-            - id: landing_jaffleshop_jaffleshop
-              schema: jaffle_shop
-              table: customers
-        - table: orders
-          dependecies:
-            - id: landing_jaffleshop_jaffleshop
-              schema: jaffle_shop
-              table: customers
-        - table: payments
-          dependecies:
-            - id: landing_jaffleshop_jaffleshop
-              schema: strip
-              table: payments
+    - id: landing_stripe
+      dependencies:
+        - id: jaffle_shop_stripe  
 
-    - id: landing_jaffleshop_jaffleshop
-      schema: jafflshop
-      tables: 
-        - table: customers
-          dependecies:
-            - id: jaffle_shop
-              schema: jaffle_shop
-              table: customers
-        - table: orders
-          dependecies:
-            - id: jaffle_shop
-              schema: jaffle_shop
-              table: customers
-        - table: payments
-          dependecies:
-            - id: jaffle_shop
-              schema: strip
-              table: payments
+    - id: raw_jaffleshop
+      dependencies:
+        - id: landing_jaffleshop
+
+    - id: raw_stripe
+      dependencies:
+        - id: landing_stripe
+
+    - id: jaffleshop
+      dependencies:
+        - id: landing_jaffleshop
+        - id: landing_stripe
+
+    # - id: raw_jaffleshop_jaffleshop
+    #   schema: jaffleshop
+    #   tables: 
+    #     - table: customers
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: orders
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: payments
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: strip
+    #           table: payments
+
+
+    # - id: raw_jaffleshop_jaffleshop
+    #   schema: jafflshop
+    #   tables: 
+    #     - table: customers
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: orders
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: payments
+    #       dependecies:
+    #         - id: landing_jaffleshop_jaffleshop
+    #           schema: strip
+    #           table: payments
+
+    # - id: landing_jaffleshop_jaffleshop
+    #   schema: jafflshop
+    #   tables: 
+    #     - table: customers
+    #       dependecies:
+    #         - id: jaffle_shop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: orders
+    #       dependecies:
+    #         - id: jaffle_shop
+    #           schema: jaffle_shop
+    #           table: customers
+    #     - table: payments
+    #       dependecies:
+    #         - id: jaffle_shop
+    #           schema: strip
+    #           table: payments
