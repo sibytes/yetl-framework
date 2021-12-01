@@ -1,4 +1,4 @@
-sql_server:
+SqlServer:
 
   - type: bigint
     spark: LongType

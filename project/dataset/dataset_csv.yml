@@ -1,7 +1,6 @@
-apiVersion: yetl-framework.io/en/1/dataset
-csv:
-  default:
-    id: default
+apiVersion: yetl-framework.io/en/1/Dataset/CSV
+datasets:
+  - id: default
     name: "{{dataset_name}}"
     read_options: 
       schema_versioning: true
@@ -15,25 +14,24 @@ csv:
       empty_column_null: true
       timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ
       date_format: yyyy-MM-dd
-    encoding: utf-8
-    days_retention_period: 30
-    partition_path_format: YYYY/mm/dd
-    partition_file_format: YYYY-mm-dd
-    extension: csv
-    compression_type: none
-    filename: "{{datastore_name}}-{{partition_file_datetime}}.ext"
-    path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}/{{partition_path_datetime}}/{{version}}"
-    mode: DROPMALFORMED
-    columnNameOfCorruptRecord: _corrupt_record
-    bad_records_path: container/datastore/exceptions/schema/partition/version
-    data_schema: 
-      schema_path: "{{datastore_container}}/spark_schema/{{datastore_name}}"
-      spark_table_schema: "spark_{{datastore_schema}}_{{dataset_name}}.json"
-      spark_column_schema: "spark_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
-      json_table_schema: "json_{{datastore_schema}}_{{dataset_name}}.json"
-      json_column_schema: "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
-  datasets:
-    - id: permissive
-      mode: PERMISSIVE
-      columnNameOfCorruptRecord: null
-      bad_records_path: null
+      encoding: utf-8
+      days_retention_period: 30
+      partition_path_format: YYYY/mm/dd
+      partition_file_format: YYYY-mm-dd
+      extension: csv
+      compression_type: none
+      filename: "{{datastore_name}}-{{partition_file_datetime}}.ext"
+      path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}/{{partition_path_datetime}}/{{version}}"
+      mode: DROPMALFORMED
+      columnNameOfCorruptRecord: _corrupt_record
+      bad_records_path: container/datastore/exceptions/schema/partition/version
+      data_schema: 
+        schema_path: "{{datastore_container}}/spark_schema/{{datastore_name}}"
+        spark_table_schema: "spark_{{datastore_schema}}_{{dataset_name}}.json"
+        spark_column_schema: "spark_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
+        json_table_schema: "json_{{datastore_schema}}_{{dataset_name}}.json"
+        json_column_schema: "json_{{datastore_schema}}_{{dataset_name}}_{{dataset_column}}.json"
+  - id: permissive
+    mode: PERMISSIVE
+    columnNameOfCorruptRecord: null
+    bad_records_path: null

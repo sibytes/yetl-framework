@@ -1,7 +1,6 @@
-apiVersion: yetl-framework.io/en/1/datastore
-adls:
-  default:
-    id: default
+apiVersion: yetl-framework.io/en/1/Datastore/Adls
+datastores:
+  - id: default
     name: jaffleshop
     description: Landing ADLS store for {{datastore_name}}
     container: landing
@@ -9,10 +8,9 @@ adls:
     account: adlsgeneva
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
-  datastores:
-    - id: landing_jaffleshop
-      schema: jaffleshop
-    - id: landing_stripe
-      schema: stripe
+  - id: landing_jaffleshop
+    schema: jaffleshop
+  - id: landing_stripe
+    schema: stripe
 
 
