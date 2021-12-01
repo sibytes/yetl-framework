@@ -10,6 +10,7 @@ apiVersion: yetl-framework.io/en/1/table_mapping
 # it will be possible to add specific tables mappings where
 # want to override specific behaviour.
 # This means we're not drowning in metadata for specific less frequent use cases.
+table_ref: "./datastore/source.yml"
 data_set_mapping:
     - id: landing_jaffleshop
       dependencies:
