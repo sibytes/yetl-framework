@@ -8,7 +8,7 @@ datastores:
     schema:
       - jaffle_shop
       - stripe
-    description: "Source transactional database store for {{datastore_name}}"
+    description: "Source transactional database store for {{name}}"
     server: localhost
     port: 5432
     user: "yetl"

@@ -2,7 +2,7 @@ apiVersion: yetl-framework.io/en/1/Datastore/Adls
 datastores:
   - id: default
     name: jaffleshop
-    description: Landing ADLS store for {{datastore_name}}
+    description: Landing ADLS store for {{name}}
     container: landing
     schema: default
     account: adlsgeneva

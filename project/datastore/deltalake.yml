@@ -2,7 +2,7 @@ apiVersion: yetl-framework.io/en/1/Datastore/Adls
 datastores:
   - id: default
     name: default
-    description: "Deltalake store for {{datastore_name}}"
+    description: "Deltalake store for {{name}}"
     container: default
     schema: default
     account: adlsgeneva

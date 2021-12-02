@@ -1,8 +1,8 @@
 apiVersion: yetl-framework.io/en/1/Dataset/Deltalake
 datasets:
   - id: default
-    name: "{{datastore_schema}}_{{dataset_name}}"
-    path: "{{datastore_container}}/{{datastore_name}}/{{dataset_classification}}/{{datastore_schema}}"
+    name: "{{datastore.schema}}_{{table.name}}"
+    path: "{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}"
     write_options: 
       partitions:
         - partition
