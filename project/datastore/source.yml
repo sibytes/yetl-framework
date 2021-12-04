@@ -11,6 +11,7 @@ datastores:
     port: 5432
     user: "yetl"
     password: "{{secrets.jaffle_shop_sqlserver_password}}"
+    table_schema: "{{ dataset }}"
 
   - id: source_jaffle_shop
     schema: jaffle_shop
