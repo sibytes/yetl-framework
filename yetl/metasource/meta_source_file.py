@@ -1,6 +1,6 @@
 from jinja2 import BaseLoader, TemplateNotFound
 from os.path import join, exists, getmtime
-
+from typing import List
 
 class MetasourceFile(BaseLoader):
 
@@ -21,4 +21,7 @@ class MetasourceFile(BaseLoader):
             source = f.read()
 
         return source, path, lambda: mtime == getmtime(path)
+
+    def list_templates(self) -> List[str]:
+        return []
 

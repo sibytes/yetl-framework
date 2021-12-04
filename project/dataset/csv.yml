@@ -1,5 +1,5 @@
 apiVersion: yetl-framework.io/en/1/Dataset/CSV
-datasets:
+dataset:
   - id: default
     name: "{{table.name}}"
     read_options: 

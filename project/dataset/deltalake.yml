@@ -1,5 +1,5 @@
 apiVersion: yetl-framework.io/en/1/Dataset/Deltalake
-datasets:
+dataset:
   - id: default
     name: "{{datastore.schema}}_{{table.name}}"
     path: "{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}"
