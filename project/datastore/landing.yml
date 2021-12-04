@@ -6,6 +6,7 @@ datastores:
     description: Landing ADLS store for {{name}}
     container: landing
     schema: default
+    table_schema: default
     account: adlsgeneva
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
@@ -13,9 +14,12 @@ datastores:
 
   - id: landing_jaffleshop
     schema: jaffleshop
-    
+    table_schema: "./dataset/jshop_schema.yml"
+
+
   - id: landing_stripe
     schema: stripe
+    table_schema: "./dataset/stripe_schema.yml"
 
 
 

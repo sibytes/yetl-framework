@@ -15,15 +15,19 @@ datastores:
     name: raw_jaffleshop
     schema: jaffleshop
     container: raw
+    table_schema: "./dataset/jshop_schema.yml"
 
   - id: raw_stripe
     name: raw_jaffleshop
     schema: stripe
     container: raw
+    table_schema: "./dataset/stripe_schema.yml"
 
   - id: jaffleshop
     name: jaffleshop
     container: prepared
+    # note we have no table schema here
+    # that's because we're not going to autogenerate them 
 
 
 

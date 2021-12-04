@@ -5,9 +5,7 @@ datastores:
   - id: default
     name: jaffle_shop
     compatibility: azure
-    schema:
-      - jaffle_shop
-      - stripe
+    schema: default
     description: "Source transactional database store for {{name}}"
     server: localhost
     port: 5432
