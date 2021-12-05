@@ -4,10 +4,10 @@ from collections import ChainMap
 
 def get_api_version(api_version_uri:str):
 
+    # TODO: Need a better validator, probably a regex
     if api_version_uri.startswith("yetl-framework.io/"):
         p = api_version_uri.split("/")
-
-        if int(p[1]) != 1:
+        if int(p[1]) != 1 or len(p) != 4:
             raise Exception("invalid api_version uri version")
 
         api_version = {
