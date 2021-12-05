@@ -1,4 +1,4 @@
-apiVersion: yetl-framework.io/en/1/Dataset/TableSchema
+apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
   - id: default
   - id: payments

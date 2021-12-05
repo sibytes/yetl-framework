@@ -1,4 +1,4 @@
-apiVersion: yetl-framework.io/en/1/Dataset/Deltalake
+apiVersion: yetl-framework.io/1/Dataset/Deltalake
 dataset:
   - id: default
     name: "{{datastore.schema}}_{{table.name}}"

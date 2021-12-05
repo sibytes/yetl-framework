@@ -1,4 +1,4 @@
-apiVersion: yetl-framework.io/en/1/Dataset/CSV
+apiVersion: yetl-framework.io/1/Dataset/CSV
 dataset:
   - id: default
     name: "{{table.name}}"

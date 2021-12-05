@@ -8,10 +8,6 @@ from collections import abc
 
 class MetasourceFile(BaseLoader):
 
-    def __init__(self, path:str) -> None:
-
-        self.path = path
-
 
     def __init__(
         self,
@@ -19,6 +15,12 @@ class MetasourceFile(BaseLoader):
         encoding: str = "utf-8",
         followlinks: bool = False,
     ) -> None:
+        """
+
+            Here we need to stitch the usability templates together into the jinja templates
+            that we want to render.
+        
+        """
         if not isinstance(searchpath, abc.Iterable) or isinstance(searchpath, str):
             searchpath = [searchpath]
 

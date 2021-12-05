@@ -1,4 +1,4 @@
-apiVersion: yetl-framework.io/en/1/Datastore/Adls
+apiVersion: yetl-framework.io/1/Datastore/Adls
 datastores:
 
   - id: default
