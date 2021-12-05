@@ -10,7 +10,6 @@ datastores:
     server: localhost
     port: 5432
     user: "yetl"
-    password: "secrets.jaffle_shop_sqlserver_password"
 
   - id: source_jaffle_shop
     schema: jaffle_shop
@@ -19,3 +18,4 @@ datastores:
   - id: source_stripe
     schema: stripe
     dataset: ./dataset/jshop_stripe.yml
+    
