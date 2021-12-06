@@ -1,4 +1,4 @@
-apiVersion: yetl-framework.io/1/Dataflow
+apiVersion: yetl-framework.io/1/Dataflow/Dataflow
 # this optional for declaring and code generating specific tables mappings
 # it is not required however. Loading lineage is gathered from the spark
 # DSL not this mapping. Dependencies like this are overly verbose so

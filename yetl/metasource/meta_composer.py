@@ -14,7 +14,7 @@ def get_api_version(api_version_uri:str):
             "namespace": p[0],
             "version": p[1],
             "base": p[2],
-            "base": p[3]
+            "type": p[3]
         }
         return api_version
     else:

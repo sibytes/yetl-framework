@@ -1,3 +1,4 @@
+apiVersion: yetl-framework.io/1/TypeMap/SqlServer
 SqlServer:
 
   - type: bigint
