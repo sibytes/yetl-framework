@@ -57,7 +57,7 @@ class Metasource(ABC):
 
                 if default:
                     # might want this here not sure yet
-                    # default["apiVersion"] = api_version
+                    default["apiVersion"] = api_version
                     defaulted = list()
                     for i in v:
 
@@ -72,16 +72,14 @@ class Metasource(ABC):
         # just upack the api version
         if not data_defaulted and api_version:
             data_defaulted = data
-        
-        data_defaulted["apiVersion"] = api_version
+            data_defaulted["apiVersion"] = api_version
 
-        return data_defaulted
+        # return the api version in tuple with collection
+        # so we can index 
+        return data_defaulted, api_version
 
 
-    def _key_by_api_version(self, master:dict, metadata:dict):
-
-        api_version:dict = metadata["apiVersion"]
-        del metadata["apiVersion"]
+    def _key_by_api_version(self, master:dict, metadata:dict, api_version:dict):
 
         master[api_version["base"]] = {
             api_version["type"] : metadata
@@ -131,9 +129,9 @@ class FileMetasource(Metasource):
                     finally:
                         f.close()
 
-                    metadata = self._expand_defaults(metadata)
+                    metadata, api_version = self._expand_defaults(metadata)
 
-                    self._key_by_api_version(master_metadata, metadata)
+                    self._key_by_api_version(master_metadata, metadata, api_version)
 
         return master_metadata
 
