@@ -3,15 +3,18 @@ from os.path import join, exists, getmtime
 import os
 import typing as t
 from collections import abc
+from jinja2.environment import TemplateModule
 import yaml
+
 from collections import ChainMap
 
 
-class FileMetasource:
+class FileMetasource(BaseLoader):
 
     _API_VESRION = "apiVersion"
     _API_NAMESPACE = "yetl-framework.io"
     _API_DEFAULT = "default"
+    _KEY_SEPERATOR = "!"
 
     def __init__(
         self,
@@ -180,83 +183,66 @@ class FileMetasource:
             fileindex = {level2: metadata}
             master[level1] = fileindex
 
-# class _MetasourceFile(BaseLoader):
-
-
-#     def __init__(
-#         self,
-#         searchpath: t.Union[str, os.PathLike, t.Sequence[t.Union[str, os.PathLike]]],
-#         encoding: str = "utf-8",
-#         followlinks: bool = False,
-#     ) -> None:
-#         """
-
-#             Here we need to stitch the usability templates together into the jinja templates
-#             that we want to render.
+    def _get_source_dict(self, template: str):
+        indexes = template.split(self._KEY_SEPERATOR)
         
-#         """
-#         if not isinstance(searchpath, abc.Iterable) or isinstance(searchpath, str):
-#             searchpath = [searchpath]
+        try:
+            contents = self.master_metadata
+            for i in indexes:
+                contents = contents[i]
 
-#         self.searchpath = [os.fspath(p) for p in searchpath]
-#         self.encoding = encoding
-#         self.followlinks = followlinks
+        except:
+            raise TemplateNotFound(template)
 
-#     def get_source(
-#         self, environment: Environment, template: str
-#     ) -> t.Tuple[str, str, t.Callable[[], bool]]:
-#         pieces = self._split_template_path(template)
-#         for searchpath in self.searchpath:
-#             filename = os.path.join(searchpath, *pieces)
-#             f = self._open_if_exists(filename)
-#             if f is None:
-#                 continue
-#             try:
-#                 contents = f.read().decode(self.encoding)
-#             finally:
-#                 f.close()
+        return contents
 
-#             mtime = os.path.getmtime(filename)
 
-#             def uptodate() -> bool:
-#                 try:
-#                     return os.path.getmtime(filename) == mtime
-#                 except OSError:
-#                     return False
+    def get_source(
+        self, environment: Environment, template: str
+    ) -> t.Tuple[str, str, t.Callable[[], bool]]:
 
-#             return contents, filename, uptodate
-#         raise TemplateNotFound(template)
+        contents = self._get_source_dict(template)
 
-#     def list_templates(self) -> t.List[str]:
-#         found = set()
-#         for searchpath in self.searchpath:
-#             walk_dir = os.walk(searchpath, followlinks=self.followlinks)
-#             for dirpath, _, filenames in walk_dir:
-#                 for filename in filenames:
-#                     template = (
-#                         os.path.join(dirpath, filename)[len(searchpath) :]
-#                         .strip(os.path.sep)
-#                         .replace(os.path.sep, "/")
-#                     )
-#                     if template[:2] == "./":
-#                         template = template[2:]
-#                     if template not in found:
-#                         found.add(template)
-#         return sorted(found)
+        class NoAliasDumper(yaml.Dumper):
+            def ignore_aliases(self, data):
+                return True
+                
+        contents:str = yaml.dump(contents, indent=4, Dumper=NoAliasDumper)
 
-#     def _split_template_path(self, template: str) -> t.List[str]:
-#         """Split a path into segments and perform a sanity check.  If it detects
-#         '..' in the path it will raise a `TemplateNotFound` error.
-#         """
-#         pieces = []
-#         for piece in template.split("/"):
-#             if (
-#                 os.path.sep in piece
-#                 or (os.path.altsep and os.path.altsep in piece)
-#                 or piece == os.path.pardir
-#             ):
-#                 raise TemplateNotFound(template)
-#             elif piece and piece != ".":
-#                 pieces.append(piece)
-#         return pieces
+        filename = template     
+
+        def uptodate() -> bool:
+            True
+            # try:
+            #     return os.path.getmtime(filename) == mtime
+            # except OSError:
+            #     return False      
+
+        return contents, filename, uptodate
+
+    def get_parameters(
+        self, template: str
+    ):
+
+        contents = self._get_source_dict(template)
+        contents["datastore"] = contents
+        contents["table"] = {}
+        return contents
+
+
+
+    def list_templates(self) -> t.List[str]:
+        templates = []
+        for k, v in self.master_metadata.items():
+            for ki in v.keys():
+                if k != "Datastore":
+                    key = f"{k}{self._KEY_SEPERATOR}{ki}" 
+                    templates.append(key)
+                else:
+                    for kj in v[ki]["datastores"].keys():
+                        keys = [k, ki, "datastores", kj]
+                        key = self._KEY_SEPERATOR.join(keys)
+                        templates.append(key)
+
+        return templates
 

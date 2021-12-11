@@ -11,50 +11,22 @@
 
 
 
-    
-
-# from yetl.metasource import meta_composer
-# import yaml
-# with open("./project/datastore/deltalake.yml", "r") as f:
-#     data:dict = yaml.safe_load(f)
-# meta_composer.stitch_defaults(data)
-# class NoAliasDumper(yaml.Dumper):
-#     def ignore_aliases(self, data):
-#         return True
-# print(yaml.dump(data, indent=4, Dumper=NoAliasDumper))
-
-
-# import jinja2
-# from yetl.metasource.meta_source_file import MetasourceFile
-# templateLoader = MetasourceFile(searchpath="./project")
-# print(templateLoader.list_templates())
-
-
-
-# templateLoader = MetasourceFile(searchpath="./project")
-# templateEnv = jinja2.Environment(loader=templateLoader)
-# TEMPLATE_FILE = "datastore/test.yml"
-# template = templateEnv.get_template(TEMPLATE_FILE)
-# # print(templateEnv.list_templates())
-# outputText = template.render()  # this is where to put args to the template renderer
-
-# print(outputText)
-
-
-
-import yaml
-
+import jinja2
 from yetl.metasource.metasource import FileMetasource
-fm = FileMetasource("./project")
+from jinja2 import Undefined
+import logging
 
-class NoAliasDumper(yaml.Dumper):
-    def ignore_aliases(self, data):
-        return True
-        
-test_dump = yaml.dump(fm.master_metadata, indent=4, Dumper=NoAliasDumper)
+
+
+templateLoader = FileMetasource(searchpath="./project")
+templateEnv = jinja2.Environment(loader=templateLoader)
+TEMPLATE_FILE = "Datastore!./datastore/deltalake.yml!datastores!raw_stripe"
+template = templateEnv.get_template(TEMPLATE_FILE)
+parameters = templateLoader.get_parameters(TEMPLATE_FILE)
+
+print(templateEnv.list_templates())
+# print(parameters)
+
 
 with open("./test_dump.yml", "w") as f:
-    f.write(test_dump)
-
-
-
+    f.write(template.render(parameters))
