@@ -1,8 +1,8 @@
 apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
-  - id: default
-  - id: customers
-    table: "{{ id }}"
+  default: null
+  customers:
+    table: customers
     columns:
       - column: id
         type: int
@@ -24,8 +24,8 @@ dataset:
     watermarks: []
     partitioning: []
 
-  - id: orders
-    table: "{{ id }}"
+  orders: 
+    table: orders
     columns:
       - column: id
         type: int

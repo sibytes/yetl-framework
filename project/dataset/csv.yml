@@ -1,6 +1,6 @@
 apiVersion: yetl-framework.io/1/Dataset/CSV
 dataset:
-  - id: default
+  default:
     name: "{{table.name}}"
     read_options: 
       schema_versioning: true
@@ -31,7 +31,7 @@ dataset:
         spark_column_schema: "spark_{{datastore.schema}}_{{table.name}}_{{table.column}}.json"
         json_table_schema: "json_{{datastore.schema}}_{{table.name}}.json"
         json_column_schema: "json_{{datastore.schema}}_{{table.name}}_{{table.column}}.json"
-  - id: permissive
+  permissive:
     mode: PERMISSIVE
     columnNameOfCorruptRecord: null
     bad_records_path: null

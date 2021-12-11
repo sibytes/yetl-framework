@@ -10,6 +10,7 @@ from collections import ChainMap
 class Metasource(ABC):
     pass
 
+
     def _get_api_version(self, api_version_uri:str):
 
         # TODO: Need a better validator, probably a regex
@@ -28,6 +29,7 @@ class Metasource(ABC):
         else:
             raise Exception("invalid api_version uri")
 
+
     def _open_if_exists(self, filename: str, mode: str = "rb") -> t.Optional[t.IO]:
         """Returns a file descriptor for the filename if that file exists,
         otherwise ``None``.
@@ -37,53 +39,59 @@ class Metasource(ABC):
 
         return open(filename, mode)
 
+
     def _expand_defaults(self, data: dict):
 
-        data_defaulted = dict()
+        defaulted_data = dict()
+        try:
+            api_version = data["apiVersion"]
+        except KeyError as e:
+            raise Exception("Invalid format api_version not found", e)
+        
+        api_version = self._get_api_version(api_version)
+
         for k, v in data.items():
 
             if k == "apiVersion":
-                api_version = self._get_api_version(v)
+                continue
 
-            # if it's a typed list with defaults
-            if isinstance(v, list):
+            if isinstance(v, dict):
+                default = v.get("default", None)
+                if not default:
+                    default = {}
+                default["apiVersion"] = api_version
+                defaulted = {}
+                
 
-                try:
-                    default = next(i for i in v if i["id"] == "default")
-                except StopIteration:
-                    continue
-                except KeyError:
-                    continue
+                for ki, vi in v.items():
+                    if isinstance(vi, dict):
+                        if ki != "default" or len(v.items())==1:
+                            defaulted[ki] = dict(ChainMap(vi, default))
+                    else:
+                        defaulted[ki] = vi
 
-                if default:
-                    # might want this here not sure yet
-                    default["apiVersion"] = api_version
-                    defaulted = list()
-                    for i in v:
+                defaulted_data[k] = defaulted
 
-                        if i["id"] != "default":
-                            # merge in defaults
-                            n = dict(ChainMap(i, default))
-                            defaulted.append(n)
+            else:
+                defaulted_data["apiVersion"] = api_version
+                defaulted_data[k] = v
 
-                    data_defaulted[k] = defaulted
-        
-        # if not a typed list with defaults
-        # just upack the api version
-        if not data_defaulted and api_version:
-            data_defaulted = data
-            data_defaulted["apiVersion"] = api_version
+
 
         # return the api version in tuple with collection
         # so we can index 
-        return data_defaulted, api_version
+        return defaulted_data, api_version
 
 
-    def _key_by_api_version(self, master:dict, metadata:dict, api_version:dict):
+    def _index_metadata(self, master:dict, metadata:dict, level1:str, level2:str):
 
-        master[api_version["base"]] = {
-            api_version["type"] : metadata
-        }
+        base = master.get(level1)
+
+        if base:
+            base[level2] = metadata
+        else:
+            fileindex = {level2: metadata}
+            master[level1] = fileindex
 
 
 
@@ -131,12 +139,9 @@ class FileMetasource(Metasource):
 
                     metadata, api_version = self._expand_defaults(metadata)
 
-                    self._key_by_api_version(master_metadata, metadata, api_version)
+                    self._index_metadata(master_metadata, metadata, api_version["base"], filename)
 
         return master_metadata
-
-
-
 
 
 # class _MetasourceFile(BaseLoader):

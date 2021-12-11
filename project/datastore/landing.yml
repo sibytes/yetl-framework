@@ -1,7 +1,7 @@
 apiVersion: yetl-framework.io/1/Datastore/Adls
 datastores:
 
-  - id: default
+  default:
     name: jaffleshop
     description: Landing ADLS store for {{name}}
     container: landing
@@ -12,12 +12,12 @@ datastores:
     dbfs: "mnt/{{container}}"
     dataset: ./dataset/csv.yml
 
-  - id: landing_jaffleshop
+  landing_jaffleshop:
     schema: jaffleshop
     table_schema: "./dataset/jshop_schema.yml"
 
 
-  - id: landing_stripe
+  landing_stripe: 
     schema: stripe
     table_schema: "./dataset/stripe_schema.yml"
 

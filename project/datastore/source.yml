@@ -2,7 +2,7 @@ apiVersion: yetl-framework.io/1/Datastore/SqlServer
 
 datastores:
 
-  - id: default
+  default:
     name: jaffle_shop
     compatibility: azure
     schema: default
@@ -12,10 +12,10 @@ datastores:
     user: "yetl"
     password: "secrets.jaffle_shop_sqlserver_password"
 
-  - id: source_jaffle_shop
+  source_jaffle_shop: 
     schema: jaffle_shop
     dataset: ./dataset/jshop_schema.yml
 
-  - id: source_stripe
+  source_stripe: 
     schema: stripe
     dataset: ./dataset/jshop_stripe.yml

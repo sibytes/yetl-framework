@@ -1,51 +1,50 @@
 apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
-  - id: default
-  - id: payments
-    table: "{{ id }}"
+  default:
+  payments:
+    table: payments
     columns:
-      - column: id
+      id:
         type: int
         nullable: false
         description: 
         ordinal: 1
-      - column: orderid
+      orderid:
         type: int
         nullable: false
         description: 
         ordinal: 2
-      - column: paymentmethod
+      paymentmethod: 
         type: varchar(50)
         nullable: false
         description: 
         ordinal: 3
-      - column: status
+      status: 
         type: varchar(50)
         nullable: false
         description: 
         ordinal: 4
-      - column: amount
+      amount: 
         type: int
         nullable: false
         description: 
         ordinal: 5
-      - column: created
+      created: 
         type: datetime
         nullable: false
         description: 
         ordinal: 6
-      - column: _batched_at
-        type: datetime
+      _batched_at: 
+        type: 
         nullable: false
         description: 
         ordinal: 7
     unique_identifiers: [id]
     foreign_keys:
-      - column: orderid
-        reference:
-          schema: jaffle_shop
-          table: orders
-          column: id
+      orderid:
+        schema: jaffle_shop
+        table: orders
+        column: id
     watermarks:
-      - column: _batched_at
+      - _batched_at
     partitioning: []
