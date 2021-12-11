@@ -1,0 +1,475 @@
+Datastore:
+    ./datastore/deltalake.yml:
+        datastores:
+            jaffleshop:
+                abfss: '{{container}}@{{account}}.dfs.core.windows.net'
+                account: adlsgeneva
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: Adls
+                    version: '1'
+                container: prepared
+                dataset:
+                    default:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: Deltalake
+                            version: '1'
+                        name: '{{datastore.schema}}_{{table.name}}'
+                        path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}'
+                        write_options:
+                            mergeschema: true
+                            mode: append
+                            partitions:
+                            - partition
+                dbfs: mnt/{{container}}
+                description: Deltalake store for {{name}}
+                name: jaffleshop
+                schema: default
+            raw_jaffleshop:
+                abfss: '{{container}}@{{account}}.dfs.core.windows.net'
+                account: adlsgeneva
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: Adls
+                    version: '1'
+                container: raw
+                dataset:
+                    default:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: Deltalake
+                            version: '1'
+                        name: '{{datastore.schema}}_{{table.name}}'
+                        path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}'
+                        write_options:
+                            mergeschema: true
+                            mode: append
+                            partitions:
+                            - partition
+                dbfs: mnt/{{container}}
+                description: Deltalake store for {{name}}
+                name: raw_jaffleshop
+                schema: jaffleshop
+                table_schema: ./dataset/jshop_schema.yml
+            raw_stripe:
+                abfss: '{{container}}@{{account}}.dfs.core.windows.net'
+                account: adlsgeneva
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: Adls
+                    version: '1'
+                container: raw
+                dataset:
+                    default:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: Deltalake
+                            version: '1'
+                        name: '{{datastore.schema}}_{{table.name}}'
+                        path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}'
+                        write_options:
+                            mergeschema: true
+                            mode: append
+                            partitions:
+                            - partition
+                dbfs: mnt/{{container}}
+                description: Deltalake store for {{name}}
+                name: raw_jaffleshop
+                schema: stripe
+                table_schema: ./dataset/stripe_schema.yml
+    ./datastore/landing.yml:
+        datastores:
+            landing_jaffleshop:
+                abfss: '{{container}}@{{account}}.dfs.core.windows.net'
+                account: adlsgeneva
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: Adls
+                    version: '1'
+                container: landing
+                dataset:
+                    permissive:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: CSV
+                            version: '1'
+                        bad_records_path: null
+                        columnNameOfCorruptRecord: null
+                        mode: PERMISSIVE
+                        name: '{{table.name}}'
+                        read_options:
+                            bad_records_path: container/datastore/exceptions/schema/partition/version
+                            columnNameOfCorruptRecord: _corrupt_record
+                            column_delimiter: ','
+                            column_names_ifr: true
+                            compression_type: none
+                            data_schema:
+                                json_column_schema: json_{{datastore.schema}}_{{table.name}}_{{table.column}}.json
+                                json_table_schema: json_{{datastore.schema}}_{{table.name}}.json
+                                schema_path: '{{datastore.container}}/spark_schema/{{datastore.name}}'
+                                spark_column_schema: spark_{{datastore.schema}}_{{table.name}}_{{table.column}}.json
+                                spark_table_schema: spark_{{datastore.schema}}_{{table.name}}.json
+                            date_format: yyyy-MM-dd
+                            days_retention_period: 30
+                            empty_column_null: true
+                            encoding: utf-8
+                            escape_character: null
+                            extension: csv
+                            filename: '{{datastore.name}}-{{partition_file_datetime}}.ext'
+                            mode: DROPMALFORMED
+                            null_value: null
+                            partition_file_format: YYYY-mm-dd
+                            partition_path_format: YYYY/mm/dd
+                            path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}/{{partition_path_datetime}}/{{version}}'
+                            quote_character: null
+                            row_delimiter: '
+
+                                '
+                            schema_versioning: true
+                            skip_line_count: 0
+                            timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ
+                dbfs: mnt/{{container}}
+                description: Landing ADLS store for {{name}}
+                name: jaffleshop
+                schema: jaffleshop
+                table_schema: ./dataset/jshop_schema.yml
+            landing_stripe:
+                abfss: '{{container}}@{{account}}.dfs.core.windows.net'
+                account: adlsgeneva
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: Adls
+                    version: '1'
+                container: landing
+                dataset:
+                    permissive:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: CSV
+                            version: '1'
+                        bad_records_path: null
+                        columnNameOfCorruptRecord: null
+                        mode: PERMISSIVE
+                        name: '{{table.name}}'
+                        read_options:
+                            bad_records_path: container/datastore/exceptions/schema/partition/version
+                            columnNameOfCorruptRecord: _corrupt_record
+                            column_delimiter: ','
+                            column_names_ifr: true
+                            compression_type: none
+                            data_schema:
+                                json_column_schema: json_{{datastore.schema}}_{{table.name}}_{{table.column}}.json
+                                json_table_schema: json_{{datastore.schema}}_{{table.name}}.json
+                                schema_path: '{{datastore.container}}/spark_schema/{{datastore.name}}'
+                                spark_column_schema: spark_{{datastore.schema}}_{{table.name}}_{{table.column}}.json
+                                spark_table_schema: spark_{{datastore.schema}}_{{table.name}}.json
+                            date_format: yyyy-MM-dd
+                            days_retention_period: 30
+                            empty_column_null: true
+                            encoding: utf-8
+                            escape_character: null
+                            extension: csv
+                            filename: '{{datastore.name}}-{{partition_file_datetime}}.ext'
+                            mode: DROPMALFORMED
+                            null_value: null
+                            partition_file_format: YYYY-mm-dd
+                            partition_path_format: YYYY/mm/dd
+                            path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}/{{partition_path_datetime}}/{{version}}'
+                            quote_character: null
+                            row_delimiter: '
+
+                                '
+                            schema_versioning: true
+                            skip_line_count: 0
+                            timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ
+                dbfs: mnt/{{container}}
+                description: Landing ADLS store for {{name}}
+                name: jaffleshop
+                schema: stripe
+                table_schema: ./dataset/stripe_schema.yml
+    ./datastore/source.yml:
+        datastores:
+            source_jaffle_shop:
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: SqlServer
+                    version: '1'
+                compatibility: azure
+                dataset:
+                    customers:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: TableSchema
+                            version: '1'
+                        columns:
+                        -   column: id
+                            description: null
+                            nullable: false
+                            ordinal: 1
+                            type: int
+                        -   column: first_name
+                            description: null
+                            nullable: false
+                            ordinal: 2
+                            type: varchar(50)
+                        -   column: last_name
+                            description: null
+                            nullable: false
+                            ordinal: 3
+                            type: varchar(50)
+                        foreign_keys: []
+                        partitioning: []
+                        table: customers
+                        unique_identifiers:
+                        - id
+                        watermarks: []
+                    default: null
+                    orders:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: TableSchema
+                            version: '1'
+                        columns:
+                        -   column: id
+                            description: null
+                            nullable: false
+                            ordinal: 1
+                            type: int
+                        -   column: user_id
+                            description: null
+                            nullable: false
+                            ordinal: 2
+                            type: int
+                        -   column: order_date
+                            description: null
+                            nullable: false
+                            ordinal: 3
+                            type: date
+                        -   column: status
+                            description: null
+                            nullable: false
+                            ordinal: 4
+                            type: varchar(50)
+                        -   column: _etl_loaded_at
+                            description: null
+                            nullable: false
+                            ordinal: 5
+                            type: datetime
+                        foreign_keys:
+                        -   column: user_id
+                            reference:
+                                column: id
+                                schema: jaffle_shop
+                                table: customers
+                        partitioning: []
+                        table: orders
+                        unique_identifiers:
+                        - id
+                        watermarks:
+                        - _etl_loaded_at
+                description: Source transactional database store for {{name}}
+                name: jaffle_shop
+                password: secrets.jaffle_shop_sqlserver_password
+                port: 5432
+                schema: jaffle_shop
+                server: localhost
+                user: yetl
+            source_stripe:
+                apiVersion:
+                    base: Datastore
+                    namespace: yetl-framework.io
+                    type: SqlServer
+                    version: '1'
+                compatibility: azure
+                dataset:
+                    default: null
+                    payments:
+                        apiVersion:
+                            base: Dataset
+                            namespace: yetl-framework.io
+                            type: TableSchema
+                            version: '1'
+                        columns:
+                            _batched_at:
+                                description: null
+                                nullable: false
+                                ordinal: 7
+                                type: null
+                            amount:
+                                description: null
+                                nullable: false
+                                ordinal: 5
+                                type: int
+                            created:
+                                description: null
+                                nullable: false
+                                ordinal: 6
+                                type: datetime
+                            id:
+                                description: null
+                                nullable: false
+                                ordinal: 1
+                                type: int
+                            orderid:
+                                description: null
+                                nullable: false
+                                ordinal: 2
+                                type: int
+                            paymentmethod:
+                                description: null
+                                nullable: false
+                                ordinal: 3
+                                type: varchar(50)
+                            status:
+                                description: null
+                                nullable: false
+                                ordinal: 4
+                                type: varchar(50)
+                        foreign_keys:
+                            orderid:
+                                column: id
+                                schema: jaffle_shop
+                                table: orders
+                        partitioning: []
+                        table: payments
+                        unique_identifiers:
+                        - id
+                        watermarks:
+                        - _batched_at
+                description: Source transactional database store for {{name}}
+                name: jaffle_shop
+                password: secrets.jaffle_shop_sqlserver_password
+                port: 5432
+                schema: stripe
+                server: localhost
+                user: yetl
+Project:
+    ./project.yml:
+        environments:
+            development:
+                apiVersion:
+                    base: Project
+                    namespace: yetl-framework.io
+                    type: Project
+                    version: '1'
+                databricks_scope:
+                    store: kv_dataplatform
+                name: development
+                project: dbfss://yetl/jaffle_shop/project
+                spark:
+                    app_name: yetl_development
+                    config: null
+                    master: local[*]
+            local:
+                apiVersion:
+                    base: Project
+                    namespace: yetl-framework.io
+                    type: Project
+                    version: '1'
+                project: ./project
+                secrets_file:
+                    path: ./project/secrets.yml
+                    secrets: secrets_1
+                spark:
+                    app_name: yetl_local
+                    config: null
+                    master: local[2]
+Secrets:
+    ./secrets.yml:
+        secrets:
+            secrets_1:
+                apiVersion:
+                    base: Secrets
+                    namespace: yetl-framework.io
+                    type: SecretsFile
+                    version: '1'
+                jaffle_shop_postgres_password: postgres
+                jaffle_shop_sqlserver_password: sql_server
+TypeMap:
+    ./type_map/sql_server.yml:
+        SqlServer:
+        -   spark: LongType
+            type: bigint
+        -   spark: DecimalType
+            type: numeric
+        -   spark: BooleanType
+            type: bit
+        -   spark: ShortType
+            type: smallint
+        -   spark: DecimalType
+            type: decimal
+        -   spark: DecimalType
+            type: smallmoney
+        -   spark: IntegerType
+            type: int
+        -   spark: ByteType
+            type: tinyint
+        -   spark: DecimalType
+            type: money
+        -   spark: DoubleType
+            type: float(25-53)
+        -   spark: FloatType
+            type: float(1-24)
+        -   spark: DoubleType
+            type: real(25-53)
+        -   spark: FloatType
+            type: real(1-24)
+        -   spark: DateType
+            type: date
+        -   spark: TimestampType
+            type: datetimeoffset
+        -   spark: TimestampType
+            type: datetime2
+        -   spark: TimestampType
+            type: smalldatetime
+        -   spark: TimestampType
+            type: datetime
+        -   spark: TimestampType
+            type: time
+        -   spark: CharType
+            type: char
+        -   spark: StringType
+            type: varchar
+        -   spark: StringType
+            type: text
+        -   spark: CharType
+            type: nchar
+        -   spark: StringType
+            type: nvarchar
+        -   spark: StringType
+            type: ntext
+        -   spark: BinaryType
+            type: binary
+        -   spark: BinaryType
+            type: varbinary
+        -   spark: BinaryType
+            type: image
+        -   spark: BinaryType
+            type: rowversion
+        -   spark: BinaryType
+            type: hierarchyid
+        -   spark: StringType
+            type: uniqueidentifier
+        -   spark: StringType
+            type: xml
+        -   spark: BinaryType
+            type: geography
+        apiVersion:
+            base: TypeMap
+            namespace: yetl-framework.io
+            type: SqlServer
+            version: '1'

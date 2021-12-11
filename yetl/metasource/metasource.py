@@ -90,6 +90,8 @@ class FileMetasource:
                         raise Exception(msg, e)
 
                     datastores_i[ki]["dataset"] = dataset["dataset"]
+
+        del data["Dataset"]
                 
 
 

@@ -51,4 +51,10 @@ class NoAliasDumper(yaml.Dumper):
     def ignore_aliases(self, data):
         return True
         
-print(yaml.dump(fm.master_metadata, indent=4, Dumper=NoAliasDumper))
+test_dump = yaml.dump(fm.master_metadata, indent=4, Dumper=NoAliasDumper)
+
+with open("./test_dump.yml", "w") as f:
+    f.write(test_dump)
+
+
+
