@@ -159,7 +159,6 @@ class FileMetasource:
                 defaulted_data[k] = v
 
 
-
         # return the api version in tuple with collection
         # so we can index 
         return defaulted_data, api_version
