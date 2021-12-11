@@ -3,99 +3,15 @@ from os.path import join, exists, getmtime
 import os
 import typing as t
 from collections import abc
-from abc import ABC, abstractmethod
 import yaml
 from collections import ChainMap
 
-class Metasource(ABC):
-    pass
 
+class FileMetasource:
 
-    def _get_api_version(self, api_version_uri:str):
-
-        # TODO: Need a better validator, probably a regex
-        if api_version_uri.startswith("yetl-framework.io/"):
-            p = api_version_uri.split("/")
-            if int(p[1]) != 1 or len(p) != 4:
-                raise Exception("invalid api_version uri version")
-
-            api_version = {
-                "namespace": p[0],
-                "version": p[1],
-                "base": p[2],
-                "type": p[3]
-            }
-            return api_version
-        else:
-            raise Exception("invalid api_version uri")
-
-
-    def _open_if_exists(self, filename: str, mode: str = "rb") -> t.Optional[t.IO]:
-        """Returns a file descriptor for the filename if that file exists,
-        otherwise ``None``.
-        """
-        if not os.path.isfile(filename):
-            return None
-
-        return open(filename, mode)
-
-
-    def _expand_defaults(self, data: dict):
-
-        defaulted_data = dict()
-        try:
-            api_version = data["apiVersion"]
-        except KeyError as e:
-            raise Exception("Invalid format api_version not found", e)
-        
-        api_version = self._get_api_version(api_version)
-
-        for k, v in data.items():
-
-            if k == "apiVersion":
-                continue
-
-            if isinstance(v, dict):
-                default = v.get("default", None)
-                if not default:
-                    default = {}
-                default["apiVersion"] = api_version
-                defaulted = {}
-                
-
-                for ki, vi in v.items():
-                    if isinstance(vi, dict):
-                        if ki != "default" or len(v.items())==1:
-                            defaulted[ki] = dict(ChainMap(vi, default))
-                    else:
-                        defaulted[ki] = vi
-
-                defaulted_data[k] = defaulted
-
-            else:
-                defaulted_data["apiVersion"] = api_version
-                defaulted_data[k] = v
-
-
-
-        # return the api version in tuple with collection
-        # so we can index 
-        return defaulted_data, api_version
-
-
-    def _index_metadata(self, master:dict, metadata:dict, level1:str, level2:str):
-
-        base = master.get(level1)
-
-        if base:
-            base[level2] = metadata
-        else:
-            fileindex = {level2: metadata}
-            master[level1] = fileindex
-
-
-
-class FileMetasource(Metasource):
+    _API_VESRION = "apiVersion"
+    _API_NAMESPACE = "yetl-framework.io"
+    _API_DEFAULT = "default"
 
     def __init__(
         self,
@@ -120,7 +36,12 @@ class FileMetasource(Metasource):
 
 
     def _load(self):
+        """
+            Loads the metadata for a datafeed.
 
+            This loads all of the metadata data files in to single dictionary.
+            This is a step prior to applying jinja rendering.
+        """
         master_metadata = dict()
 
         for searchpath in self.searchpath:
@@ -139,10 +60,124 @@ class FileMetasource(Metasource):
 
                     metadata, api_version = self._expand_defaults(metadata)
 
-                    self._index_metadata(master_metadata, metadata, api_version["base"], filename)
+                    relative_path = dirpath.replace(searchpath, ".") + f"/{filename}"
+                    self._index_metadata(master_metadata, metadata, api_version["base"], relative_path)
+
+        # needs to done with jinja templating but in order
+        # to move onto that it's easier if these are stictched
+        # first.
+        # TODO: refactor into a template render
+        self._stitch_file_references(master_metadata)
 
         return master_metadata
 
+
+    def _stitch_file_references(self, data:dict):
+
+        datastores:dict = data["Datastore"]
+
+        for k in datastores.keys():
+            datastores_i:dict = datastores[k]["datastores"]
+
+            for ki in datastores_i.keys():
+
+                dataset_path = datastores_i[ki].get("dataset")
+                if dataset_path:
+                    try:
+                        dataset = data["Dataset"][dataset_path]
+                    except KeyError as e:
+                        msg = f"Datastore {ki} Dataset with path reference {dataset_path} not found in Dataset metadata"
+                        raise Exception(msg, e)
+
+                    datastores_i[ki]["dataset"] = dataset["dataset"]
+                
+
+
+    def _get_api_version(self, api_version_uri:str):
+
+        # TODO: Need a better validator, probably a regex
+        if api_version_uri.startswith(f"{self._API_NAMESPACE}/"):
+            p = api_version_uri.split("/")
+            if int(p[1]) != 1 or len(p) != 4:
+                raise Exception(f"invalid {self._API_VESRION} uri version")
+
+            api_version = {
+                "namespace": p[0],
+                "version": p[1],
+                "base": p[2],
+                "type": p[3]
+            }
+            return api_version
+        else:
+            raise Exception(f"invalid {self._API_VESRION} uri")
+
+
+    def _open_if_exists(self, filename: str, mode: str = "rb") -> t.Optional[t.IO]:
+        """Returns a file descriptor for the filename if that file exists,
+        otherwise ``None``.
+        """
+        if not os.path.isfile(filename):
+            return None
+
+        return open(filename, mode)
+
+
+    def _expand_defaults(self, data: dict):
+
+        defaulted_data = dict()
+        try:
+            api_version = data[self._API_VESRION]
+        except KeyError as e:
+            raise Exception(f"Invalid format {self._API_VESRION} not found", e)
+        
+        api_version = self._get_api_version(api_version)
+
+        for k, v in data.items():
+
+            if k == self._API_VESRION:
+                continue
+
+            if isinstance(v, dict):
+                default = v.get(self._API_DEFAULT, None)
+                if not default:
+                    default = {}
+                default[self._API_VESRION] = api_version
+                defaulted = {}
+                
+
+                for ki, vi in v.items():
+                    if isinstance(vi, dict):
+                        if ki != self._API_DEFAULT or len(v.items())==1:
+                            defaulted[ki] = dict(ChainMap(vi, default))
+                    else:
+                        defaulted[ki] = vi
+
+                defaulted_data[k] = defaulted
+
+            else:
+                defaulted_data[self._API_VESRION] = api_version
+                defaulted_data[k] = v
+
+
+
+        # return the api version in tuple with collection
+        # so we can index 
+        return defaulted_data, api_version
+
+
+    def _index_metadata(self, master:dict, metadata:dict, level1:str, level2:str):
+        """
+            takes a dictionary wraps it into a 2 level deep key dictionary
+            and inserts it into the indexed master dictionary
+        """
+
+        base = master.get(level1)
+
+        if base:
+            base[level2] = metadata
+        else:
+            fileindex = {level2: metadata}
+            master[level1] = fileindex
 
 # class _MetasourceFile(BaseLoader):
 
