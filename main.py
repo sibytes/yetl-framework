@@ -16,8 +16,6 @@ from yetl.metasource.metasource import FileMetasource
 from jinja2 import Undefined
 import logging
 
-
-
 templateLoader = FileMetasource(searchpath="./project")
 templateEnv = jinja2.Environment(loader=templateLoader)
 TEMPLATE_FILE = "Datastore!./datastore/deltalake.yml!datastores!raw_stripe"
@@ -26,7 +24,6 @@ parameters = templateLoader.get_parameters(TEMPLATE_FILE)
 
 print(templateEnv.list_templates())
 # print(parameters)
-
 
 with open("./test_dump.yml", "w") as f:
     f.write(template.render(parameters))
