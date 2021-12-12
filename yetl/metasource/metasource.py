@@ -107,7 +107,42 @@ class FileMetasource(BaseLoader):
         return open(filename, mode)
 
     def _index(self):
-        """ """
+        """ Indexes the templates so that component parts
+            of a pipeline can be easily found.
+
+            Metadata is organised for the convenience of the user. This
+            means we have a bit work to do to peice things together for
+            templating. This procedure creates an index that allows component
+            objects to be easily found. The index is in 2 parts:
+
+            Part 1:
+                base_type!type!filepath
+                
+                Part 1 is mandatory and makes it easy to find the file for 
+                certain types of objects. Not that objects are defined in 
+                the file yaml description using apiVersion property. For example:
+
+                    Dataset!Deltalake!./project/dataset/mydataset.yml
+
+            Part 2:
+                level_1_dict_key!level_2_dict_key!... and so on
+
+                Part 2 is option and is dictionary key path to the object
+                of concern with the template. This allows many objects
+                to make use of defaults in a yaml definition but are
+                in fact separate objects. Yaml definitions will only have
+                intradocument key indexes where it makes sense e.g. datastore.
+
+                    datastores!my_datastore
+
+            Final example being:
+
+                Dataset!Deltalake!./project/dataset/mydataset.yml!datastores!my_datastore
+
+
+
+        
+        """
         metadata_index = list()
 
         for searchpath in self.searchpath:
