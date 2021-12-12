@@ -291,6 +291,9 @@ class FileMetasource(BaseLoader):
     def get_source(
         self, environment: Environment, template: str
     ) -> t.Tuple[str, str, t.Callable[[], bool]]:
+        """
+        
+        """
 
         # Lookup the template using the template index.
         contents = self._get_source_dict(template)
