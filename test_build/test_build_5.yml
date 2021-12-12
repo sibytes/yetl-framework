@@ -1,14 +1,14 @@
-abfss: 'raw@adlsgeneva.dfs.core.windows.net'
-account: adlsgeneva
-apiVersion:
-    base: Datastore
-    namespace: yetl-framework.io
-    type: Adls
-    version: '1'
-container: raw
-dataset: ./dataset/deltalake.yml
-dbfs: mnt/raw
-description: Deltalake store for raw_jaffleshop
-name: raw_jaffleshop
-schema: stripe
-table_schema: ./dataset/stripe_schema.yml
+dataset:
+    default:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: Deltalake
+            version: '1'
+        name: '{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}'
+        path: '{{ no such element: dict object['container'] }}/{{ no such element: dict object['name'] }}/{{ no such element: dict object['classification'] }}/{{ no such element: dict object['schema'] }}'
+        write_options:
+            mergeschema: true
+            mode: append
+            partitions:
+            - partition

@@ -1,14 +1,29 @@
-apiVersion:
-    base: Datastore
-    namespace: yetl-framework.io
-    type: SqlServer
-    version: '1'
-compatibility: azure
-dataset: ./dataset/stripe_schema.yml
-description: Source transactional database store for jaffle_shop
-name: jaffle_shop
-password: secrets.jaffle_shop_sqlserver_password
-port: 5432
-schema: stripe
-server: localhost
-user: yetl
+environments:
+    development:
+        apiVersion:
+            base: Project
+            namespace: yetl-framework.io
+            type: Project
+            version: '1'
+        databricks_scope:
+            store: kv_dataplatform
+        name: development
+        project: dbfss://yetl/jaffle_shop/project
+        spark:
+            app_name: yetl_development
+            config: null
+            master: local[*]
+    local:
+        apiVersion:
+            base: Project
+            namespace: yetl-framework.io
+            type: Project
+            version: '1'
+        project: ./project
+        secrets_file:
+            path: ./project/secrets.yml
+            secrets: secrets_1
+        spark:
+            app_name: yetl_local
+            config: null
+            master: local[2]

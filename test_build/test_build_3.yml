@@ -1,14 +1,55 @@
-abfss: 'landing@adlsgeneva.dfs.core.windows.net'
-account: adlsgeneva
-apiVersion:
-    base: Datastore
-    namespace: yetl-framework.io
-    type: Adls
-    version: '1'
-container: landing
-dataset: ./dataset/csv.yml
-dbfs: mnt/landing
-description: Landing ADLS store for jaffleshop
-name: jaffleshop
-schema: stripe
-table_schema: ./dataset/stripe_schema.yml
+dataset:
+    default: null
+    payments:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: TableSchema
+            version: '1'
+        columns:
+            _batched_at:
+                description: null
+                nullable: false
+                ordinal: 7
+                type: null
+            amount:
+                description: null
+                nullable: false
+                ordinal: 5
+                type: int
+            created:
+                description: null
+                nullable: false
+                ordinal: 6
+                type: datetime
+            id:
+                description: null
+                nullable: false
+                ordinal: 1
+                type: int
+            orderid:
+                description: null
+                nullable: false
+                ordinal: 2
+                type: int
+            paymentmethod:
+                description: null
+                nullable: false
+                ordinal: 3
+                type: varchar(50)
+            status:
+                description: null
+                nullable: false
+                ordinal: 4
+                type: varchar(50)
+        foreign_keys:
+            orderid:
+                column: id
+                schema: jaffle_shop
+                table: orders
+        partitioning: []
+        table: payments
+        unique_identifiers:
+        - id
+        watermarks:
+        - _batched_at

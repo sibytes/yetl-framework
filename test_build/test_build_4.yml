@@ -1,14 +1,42 @@
-abfss: 'raw@adlsgeneva.dfs.core.windows.net'
-account: adlsgeneva
-apiVersion:
-    base: Datastore
-    namespace: yetl-framework.io
-    type: Adls
-    version: '1'
-container: raw
-dataset: ./dataset/deltalake.yml
-dbfs: mnt/raw
-description: Deltalake store for raw_jaffleshop
-name: raw_jaffleshop
-schema: jaffleshop
-table_schema: ./dataset/jshop_schema.yml
+dataset:
+    permissive:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: CSV
+            version: '1'
+        bad_records_path: null
+        columnNameOfCorruptRecord: null
+        mode: PERMISSIVE
+        name: '{{ no such element: dict object['name'] }}'
+        read_options:
+            bad_records_path: container/datastore/exceptions/schema/partition/version
+            columnNameOfCorruptRecord: _corrupt_record
+            column_delimiter: ','
+            column_names_ifr: true
+            compression_type: none
+            data_schema:
+                json_column_schema: json_{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}_{{ no such element: dict object['column'] }}.json
+                json_table_schema: json_{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}.json
+                schema_path: '{{ no such element: dict object['container'] }}/spark_schema/{{ no such element: dict object['name'] }}'
+                spark_column_schema: spark_{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}_{{ no such element: dict object['column'] }}.json
+                spark_table_schema: spark_{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}.json
+            date_format: yyyy-MM-dd
+            days_retention_period: 30
+            empty_column_null: true
+            encoding: utf-8
+            escape_character: null
+            extension: csv
+            filename: '{{ no such element: dict object['name'] }}-{{ partition_file_datetime }}.ext'
+            mode: DROPMALFORMED
+            null_value: null
+            partition_file_format: YYYY-mm-dd
+            partition_path_format: YYYY/mm/dd
+            path: '{{ no such element: dict object['container'] }}/{{ no such element: dict object['name'] }}/{{ no such element: dict object['classification'] }}/{{ no such element: dict object['schema'] }}/{{ partition_path_datetime }}/{{ version }}'
+            quote_character: null
+            row_delimiter: '
+
+                '
+            schema_versioning: true
+            skip_line_count: 0
+            timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ

@@ -9,10 +9,10 @@
 # df = yetl.spark.sql("select 1")
 # df.show()
 
-
+from jinja2 import DebugUndefined
 from pprint import pprint
 from yetl.metasource import Builder
-templates = Builder.build("./project")
+templates = Builder.build("./project", DebugUndefined)
 
 for i in range(len(templates)):
     with open(f"./test_build/test_build_{i}.yml", "w") as f:

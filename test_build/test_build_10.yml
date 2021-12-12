@@ -1,0 +1,14 @@
+abfss: 'landing@adlsgeneva.dfs.core.windows.net'
+account: adlsgeneva
+apiVersion:
+    base: Datastore
+    namespace: yetl-framework.io
+    type: Adls
+    version: '1'
+container: landing
+dataset: ./dataset/csv.yml
+dbfs: mnt/landing
+description: Landing ADLS store for jaffleshop
+name: jaffleshop
+schema: stripe
+table_schema: ./dataset/stripe_schema.yml
