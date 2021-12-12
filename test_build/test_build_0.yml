@@ -1,0 +1,14 @@
+apiVersion:
+    base: Datastore
+    namespace: yetl-framework.io
+    type: SqlServer
+    version: '1'
+compatibility: azure
+dataset: ./dataset/jshop_schema.yml
+description: Source transactional database store for jaffle_shop
+name: jaffle_shop
+password: secrets.jaffle_shop_sqlserver_password
+port: 5432
+schema: jaffle_shop
+server: localhost
+user: yetl

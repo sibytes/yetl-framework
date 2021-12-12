@@ -1,12 +1,37 @@
 from jinja2 import BaseLoader, TemplateNotFound, Environment, Undefined
-from os.path import join, exists, getmtime
+from os.path import getmtime
 import os
 import typing as t
 from collections import abc
 
-from jinja2.environment import *
+
 import yaml
 from collections import ChainMap
+
+
+class Builder:
+
+    _linked_index_resolvers = {
+        "table_schema" : ["Dataset", "TableSchema"],
+        "dataset": ["Dataset"]
+    }
+
+    @classmethod
+    def build(cls, searchpath:str, undefined: t.Type[Undefined] = Undefined) -> None:
+
+        loader = FileMetasource(searchpath=searchpath)
+        env = Environment(loader=loader, undefined=undefined)
+        tpt_datastores = env.list_templates(
+            filter_func=FileMetasource.template_filter("Datastore"))
+        print(tpt_datastores)
+        return [Builder._render(tpt, env, loader) for tpt in tpt_datastores]
+            
+
+    @classmethod
+    def _render(cls, template_index:str, env:Environment, loader):
+        template = env.get_template(template_index)
+
+        return template.render(loader.get_parameters(template_index))
 
 
 class FileMetasource(BaseLoader):
@@ -14,7 +39,7 @@ class FileMetasource(BaseLoader):
     _API_VESRION = "apiVersion"
     _API_NAMESPACE = "yetl-framework.io"
     _API_DEFAULT = "default"
-    _KEY_SEPERATOR = "!"
+    _INDEX_SEPARATOR = "!"
     _ENABLE_DICT_INDEX = ["Datastore"]
 
     def __init__(
@@ -91,11 +116,11 @@ class FileMetasource(BaseLoader):
         """ Returns an inner dictionary from a dictionary using a list of list
 
             The list of keys can explicitly be a list or a character separated
-            string where the separator is defined in self._KEY_SEPERATOR.
+            string where the separator is defined in self._INDEX_SEPARATOR.
         
         """
         if isinstance(index, str):
-            index = index.split(self._KEY_SEPERATOR)
+            index = index.split(self._INDEX_SEPARATOR)
 
         n = data
         for k in index:
@@ -194,13 +219,13 @@ class FileMetasource(BaseLoader):
                                     if ki != self._API_DEFAULT and isinstance(vi, dict):
                                         # build part1 and part2 of the index and add the index
                                         keys = [base, type, path, k, ki]
-                                        index = self._KEY_SEPERATOR.join(keys)
+                                        index = self._INDEX_SEPARATOR.join(keys)
                                         metadata_index.append(index)
 
                     else:
                         # build part1 of the index only
                         keys = [base, type, path]
-                        index = self._KEY_SEPERATOR.join(keys)
+                        index = self._INDEX_SEPARATOR.join(keys)
                         metadata_index.append(index)
 
         return metadata_index
@@ -218,7 +243,7 @@ class FileMetasource(BaseLoader):
             templateEnv.list_templates(filter_func=FileMetasource.template_filter("Datastore", "Adls"))
         
         """
-        key_sep = cls._KEY_SEPERATOR
+        key_sep = cls._INDEX_SEPARATOR
 
         def filter(i: str) -> bool:
             list_boolean = []
@@ -258,10 +283,10 @@ class FileMetasource(BaseLoader):
         """
 
         # split out the file index and dictationary key index
-        file_index = index.split(self._KEY_SEPERATOR)[:3]
+        file_index = index.split(self._INDEX_SEPARATOR)[:3]
 
         try:
-            dict_index = index.split(self._KEY_SEPERATOR)[3:]
+            dict_index = index.split(self._INDEX_SEPARATOR)[3:]
         except:
             dict_index = None
 
@@ -315,7 +340,7 @@ class FileMetasource(BaseLoader):
 
         contents: str = yaml.dump(contents, indent=4, Dumper=NoAliasDumper)
 
-        filename = template.split(self._KEY_SEPERATOR)[2]
+        filename = template.split(self._INDEX_SEPARATOR)[2]
 
         # TODO autoloading support.
         def uptodate() -> bool:

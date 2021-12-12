@@ -1,0 +1,13 @@
+abfss: 'prepared@adlsgeneva.dfs.core.windows.net'
+account: adlsgeneva
+apiVersion:
+    base: Datastore
+    namespace: yetl-framework.io
+    type: Adls
+    version: '1'
+container: prepared
+dataset: ./dataset/deltalake.yml
+dbfs: mnt/prepared
+description: Deltalake store for jaffleshop
+name: jaffleshop
+schema: default
