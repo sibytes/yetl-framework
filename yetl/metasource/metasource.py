@@ -15,6 +15,7 @@ class FileMetasource(BaseLoader):
     _API_NAMESPACE = "yetl-framework.io"
     _API_DEFAULT = "default"
     _KEY_SEPERATOR = "!"
+    _ENABLE_DICT_INDEX = ["Datastore"]
 
     def __init__(
         self,
@@ -113,7 +114,12 @@ class FileMetasource(BaseLoader):
             Metadata is organised for the convenience of the user. This
             means we have a bit work to do to peice things together for
             templating. This procedure creates an index that allows component
-            objects to be easily found. The index is in 2 parts:
+            objects to be easily found. Ultimately this means that templates
+            can be defined an isolated at lower grain than file which is useful
+            to allow the metadata to be declared in a convenient way for the user
+            but render in way that needed for the yetl.
+            
+            The index is in 2 parts:
 
             Part 1:
                 base_type!type!filepath
@@ -144,11 +150,13 @@ class FileMetasource(BaseLoader):
         
         """
         metadata_index = list()
-
+        # walk the files in the template home dir
         for searchpath in self.searchpath:
             walk_dir = os.walk(searchpath, followlinks=self.followlinks)
             for dirpath, _, filenames in walk_dir:
                 for filename in filenames:
+
+                    # load yaml data from the file
                     metafile = os.path.join(dirpath, filename)
 
                     f = self._open_if_exists(metafile)
@@ -159,6 +167,7 @@ class FileMetasource(BaseLoader):
                     finally:
                         f.close()
 
+                    # parse out the API, since we need it for part 1 of the index
                     try:
                         api_version = metadata[self._API_VESRION]
                     except KeyError as e:
@@ -167,20 +176,24 @@ class FileMetasource(BaseLoader):
                         )
 
                     api_version = self._get_api_version(api_version)
+
+                    # set variables for part 1 of the index
                     base = api_version["base"]
                     type = api_version["type"]
                     path = f"{dirpath}/{filename}"
 
-                    if base == "Datastore":
+                    if base in self._ENABLE_DICT_INDEX:
                         for k, v in metadata.items():
                             if isinstance(v, dict):
                                 for ki, vi in v.items():
                                     if ki != self._API_DEFAULT and isinstance(vi, dict):
+                                        # build part1 and part2 of the index and add the index
                                         keys = [base, type, path, k, ki]
                                         index = self._KEY_SEPERATOR.join(keys)
                                         metadata_index.append(index)
 
                     else:
+                        # build part1 of the index only
                         keys = [base, type, path]
                         index = self._KEY_SEPERATOR.join(keys)
                         metadata_index.append(index)
@@ -189,7 +202,17 @@ class FileMetasource(BaseLoader):
 
     @classmethod
     def template_filter(cls, *args):
+        """ Returns a filter index function for jinja template listing
 
+            Returns a function that allows arguments to be passed in to
+            filter a sub-set template indexes.
+
+            e.g. we can call the following to return the 
+            Datastore!Adls template indexes:
+
+            templateEnv.list_templates(filter_func=FileMetasource.template_filter("Datastore", "Adls"))
+        
+        """
         key_sep = cls._KEY_SEPERATOR
 
         def filter(i: str) -> bool:
@@ -207,11 +230,29 @@ class FileMetasource(BaseLoader):
         return filter
 
     def list_templates(self, base: str = None, type: str = None) -> t.List[str]:
-
+        """List the template indexes"""
         return self._index()
 
     def _get_source_dict(self, index: str):
+        """ Given a template index return the content.
 
+            The 1st part of the index is used to the return the file.
+            The file is loaded and if there is a second part of the index
+            this is used to return a subset or the contained dictionary.
+
+            Once the dictionary is returned we must expand the defaults.
+            Default in the templates allow object level defaults to be 
+            declared which apply to the abbreviated objects that follow.
+            This makes it very convenient for the users to create concise
+            templates. However we need to do a bit of work to fill these
+            defaults into the objects before we render the templates since
+            some files contain multiple templates and we may only render
+            the relevant templates and so the defaults need to be filled
+            in before hand.
+        
+        """
+
+        # split out the file index and dictationary key index
         file_index = index.split(self._KEY_SEPERATOR)[:3]
 
         try:
@@ -219,12 +260,16 @@ class FileMetasource(BaseLoader):
         except:
             dict_index = None
 
+        # load the data
         f = self._open_if_exists(file_index[2])
         try:
             data = yaml.safe_load(f)
         finally:
             f.close()
 
+        # parse out the API version, since we fill this into the defaults also
+        # it's useful for serialising into an object api following template 
+        # rendering
         try:
             api_version = data[self._API_VESRION]
         except KeyError as e:
@@ -232,8 +277,12 @@ class FileMetasource(BaseLoader):
 
         api_version = self._get_api_version(api_version)
 
+        # expand out the defaults and api version type information
         data = self._expand_defaults(data, api_version)
 
+        # finally if there is a dictionary index look
+        # up the dictionary and return a subset of the file
+        # as a template.
         if dict_index:
             data = self._lookup_index(data, dict_index)
 
@@ -243,16 +292,19 @@ class FileMetasource(BaseLoader):
         self, environment: Environment, template: str
     ) -> t.Tuple[str, str, t.Callable[[], bool]]:
 
+        # Lookup the template using the template index.
         contents = self._get_source_dict(template)
 
+        # dump out to yaml text
         class NoAliasDumper(yaml.Dumper):
             def ignore_aliases(self, data):
                 return True
 
         contents: str = yaml.dump(contents, indent=4, Dumper=NoAliasDumper)
 
-        filename = template
+        filename = template.split(self._KEY_SEPERATOR)[2]
 
+        # TODO autoloading support.
         def uptodate() -> bool:
             True
             # try:
