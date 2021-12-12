@@ -1,27 +1,14 @@
-abfss: 'raw@adlsgeneva.dfs.core.windows.net'
+abfss: 'landing@adlsgeneva.dfs.core.windows.net'
 account: adlsgeneva
 apiVersion:
     base: Datastore
     namespace: yetl-framework.io
     type: Adls
     version: '1'
-container: raw
-dataset:
-    default:
-        apiVersion:
-            base: Dataset
-            namespace: yetl-framework.io
-            type: Deltalake
-            version: '1'
-        name: 'stripe_'
-        path: 'raw/raw_jaffleshop//stripe'
-        write_options:
-            mergeschema: true
-            mode: append
-            partitions:
-            - partition
-dbfs: mnt/raw
-description: Deltalake store for raw_jaffleshop
-name: raw_jaffleshop
-schema: stripe
-table_schema: ./dataset/stripe_schema.yml
+container: landing
+dataset: ./dataset/csv.yml
+dbfs: mnt/landing
+description: Landing ADLS store for jaffleshop
+name: jaffleshop
+schema: jaffleshop
+table_schema: ./dataset/jshop_schema.yml

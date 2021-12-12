@@ -1,11 +1,11 @@
-from jinja2 import BaseLoader, TemplateNotFound, Environment
+from jinja2 import BaseLoader, TemplateNotFound, Environment, Undefined
 from os.path import join, exists, getmtime
 import os
 import typing as t
 from collections import abc
-from jinja2.environment import TemplateModule
-import yaml
 
+from jinja2.environment import *
+import yaml
 from collections import ChainMap
 
 
@@ -24,9 +24,9 @@ class FileMetasource(BaseLoader):
     ) -> None:
         """
 
-            Here we need to stitch the usability templates together into the jinja templates
-            that we want to render.
-        
+        Here we need to stitch the usability templates together into the jinja templates
+        that we want to render.
+
         """
         if not isinstance(searchpath, abc.Iterable) or isinstance(searchpath, str):
             searchpath = [searchpath]
@@ -35,107 +35,9 @@ class FileMetasource(BaseLoader):
         self.encoding = encoding
         self.followlinks = followlinks
 
-        self.master_metadata = self._load()
-
-
-    def _load(self):
-        """
-            Loads the metadata for a datafeed.
-
-            This loads all of the metadata data files in to single dictionary.
-            This is a step prior to applying jinja rendering.
-        """
-        master_metadata = dict()
-
-        for searchpath in self.searchpath:
-            walk_dir = os.walk(searchpath, followlinks=self.followlinks)
-            for dirpath, _, filenames in walk_dir:
-                for filename in filenames:
-                    metafile = os.path.join(dirpath, filename)
-
-                    f = self._open_if_exists(metafile)
-                    if f is None:
-                        continue
-                    try:
-                        metadata = yaml.safe_load(f)
-                    finally:
-                        f.close()
-
-                    metadata, api_version = self._expand_defaults(metadata)
-
-                    relative_path = dirpath.replace(searchpath, ".") + f"/{filename}"
-                    self._index_metadata(master_metadata, metadata, api_version["base"], relative_path)
-
-        # needs to done with jinja templating but in order
-        # to move onto that it's easier if these are stictched
-        # first.
-        # TODO: refactor into a template render
-        self._stitch_file_references(master_metadata)
-
-        return master_metadata
-
-
-    def _stitch_file_references(self, data:dict):
-
-        datastores:dict = data["Datastore"]
-
-        for k in datastores.keys():
-            datastores_i:dict = datastores[k]["datastores"]
-
-            for ki in datastores_i.keys():
-
-                dataset_path = datastores_i[ki].get("dataset")
-                if dataset_path:
-                    try:
-                        dataset = data["Dataset"][dataset_path]
-                    except KeyError as e:
-                        msg = f"Datastore {ki} Dataset with path reference {dataset_path} not found in Dataset metadata"
-                        raise Exception(msg, e)
-
-                    datastores_i[ki]["dataset"] = dataset["dataset"]
-
-        del data["Dataset"]
-                
-
-
-    def _get_api_version(self, api_version_uri:str):
-
-        # TODO: Need a better validator, probably a regex
-        if api_version_uri.startswith(f"{self._API_NAMESPACE}/"):
-            p = api_version_uri.split("/")
-            if int(p[1]) != 1 or len(p) != 4:
-                raise Exception(f"invalid {self._API_VESRION} uri version")
-
-            api_version = {
-                "namespace": p[0],
-                "version": p[1],
-                "base": p[2],
-                "type": p[3]
-            }
-            return api_version
-        else:
-            raise Exception(f"invalid {self._API_VESRION} uri")
-
-
-    def _open_if_exists(self, filename: str, mode: str = "rb") -> t.Optional[t.IO]:
-        """Returns a file descriptor for the filename if that file exists,
-        otherwise ``None``.
-        """
-        if not os.path.isfile(filename):
-            return None
-
-        return open(filename, mode)
-
-
-    def _expand_defaults(self, data: dict):
+    def _expand_defaults(self, data: dict, api_version: dict):
 
         defaulted_data = dict()
-        try:
-            api_version = data[self._API_VESRION]
-        except KeyError as e:
-            raise Exception(f"Invalid format {self._API_VESRION} not found", e)
-        
-        api_version = self._get_api_version(api_version)
 
         for k, v in data.items():
 
@@ -148,11 +50,10 @@ class FileMetasource(BaseLoader):
                     default = {}
                 default[self._API_VESRION] = api_version
                 defaulted = {}
-                
 
                 for ki, vi in v.items():
                     if isinstance(vi, dict):
-                        if ki != self._API_DEFAULT or len(v.items())==1:
+                        if ki != self._API_DEFAULT or len(v.items()) == 1:
                             defaulted[ki] = dict(ChainMap(vi, default))
                     else:
                         defaulted[ki] = vi
@@ -163,39 +64,145 @@ class FileMetasource(BaseLoader):
                 defaulted_data[self._API_VESRION] = api_version
                 defaulted_data[k] = v
 
-
         # return the api version in tuple with collection
-        # so we can index 
-        return defaulted_data, api_version
+        # so we can index
+        return defaulted_data
 
+    def _get_api_version(self, api_version_uri: str):
 
-    def _index_metadata(self, master:dict, metadata:dict, level1:str, level2:str):
-        """
-            takes a dictionary wraps it into a 2 level deep key dictionary
-            and inserts it into the indexed master dictionary
-        """
+        # TODO: Need a better validator, probably a regex
+        if api_version_uri.startswith(f"{self._API_NAMESPACE}/"):
+            p = api_version_uri.split("/")
+            if int(p[1]) != 1 or len(p) != 4:
+                raise Exception(f"invalid {self._API_VESRION} uri version")
 
-        base = master.get(level1)
-
-        if base:
-            base[level2] = metadata
+            api_version = {
+                "namespace": p[0],
+                "version": p[1],
+                "base": p[2],
+                "type": p[3],
+            }
+            return api_version
         else:
-            fileindex = {level2: metadata}
-            master[level1] = fileindex
+            raise Exception(f"invalid {self._API_VESRION} uri")
 
-    def _get_source_dict(self, template: str):
-        indexes = template.split(self._KEY_SEPERATOR)
-        
+    def _lookup_index(self, data: dict, index: t.Union[str, list]):
+
+        if isinstance(index, str):
+            index = index.split("!")
+
+        n = data
+        for k in index:
+            n = n[k]
+
+        return n
+
+    def _open_if_exists(self, filename: str, mode: str = "rb") -> t.Optional[t.IO]:
+        """Returns a file descriptor for the filename if that file exists,
+        otherwise ``None``.
+        """
+        if not os.path.isfile(filename):
+            return None
+
+        return open(filename, mode)
+
+    def _index(self):
+        """ """
+        metadata_index = list()
+
+        for searchpath in self.searchpath:
+            walk_dir = os.walk(searchpath, followlinks=self.followlinks)
+            for dirpath, _, filenames in walk_dir:
+                for filename in filenames:
+                    metafile = os.path.join(dirpath, filename)
+
+                    f = self._open_if_exists(metafile)
+                    if f is None:
+                        continue
+                    try:
+                        metadata: dict = yaml.safe_load(f)
+                    finally:
+                        f.close()
+
+                    try:
+                        api_version = metadata[self._API_VESRION]
+                    except KeyError as e:
+                        raise Exception(
+                            f"Invalid format {self._API_VESRION} not found", e
+                        )
+
+                    api_version = self._get_api_version(api_version)
+                    base = api_version["base"]
+                    type = api_version["type"]
+                    path = f"{dirpath}/{filename}"
+
+                    if base == "Datastore":
+                        for k, v in metadata.items():
+                            if isinstance(v, dict):
+                                for ki, vi in v.items():
+                                    if ki != self._API_DEFAULT and isinstance(vi, dict):
+                                        keys = [base, type, path, k, ki]
+                                        index = self._KEY_SEPERATOR.join(keys)
+                                        metadata_index.append(index)
+
+                    else:
+                        keys = [base, type, path]
+                        index = self._KEY_SEPERATOR.join(keys)
+                        metadata_index.append(index)
+
+        return metadata_index
+
+    @classmethod
+    def template_filter(cls, *args):
+
+        key_sep = cls._KEY_SEPERATOR
+
+        def filter(i: str) -> bool:
+            list_boolean = []
+
+            for n in range(len(args)):
+                try:
+                    r = i.split(key_sep)[n].lower() == args[n].lower()
+                except:
+                    r = False
+                list_boolean.append(r)
+
+            return all(list_boolean)
+
+        return filter
+
+    def list_templates(self, base: str = None, type: str = None) -> t.List[str]:
+
+        return self._index()
+
+    def _get_source_dict(self, index: str):
+
+        file_index = index.split(self._KEY_SEPERATOR)[:3]
+
         try:
-            contents = self.master_metadata
-            for i in indexes:
-                contents = contents[i]
-
+            dict_index = index.split(self._KEY_SEPERATOR)[3:]
         except:
-            raise TemplateNotFound(template)
+            dict_index = None
 
-        return contents
+        f = self._open_if_exists(file_index[2])
+        try:
+            data = yaml.safe_load(f)
+        finally:
+            f.close()
 
+        try:
+            api_version = data[self._API_VESRION]
+        except KeyError as e:
+            raise Exception(f"Invalid format {self._API_VESRION} not found", e)
+
+        api_version = self._get_api_version(api_version)
+
+        data = self._expand_defaults(data, api_version)
+
+        if dict_index:
+            data = self._lookup_index(data, dict_index)
+
+        return data
 
     def get_source(
         self, environment: Environment, template: str
@@ -206,43 +213,23 @@ class FileMetasource(BaseLoader):
         class NoAliasDumper(yaml.Dumper):
             def ignore_aliases(self, data):
                 return True
-                
-        contents:str = yaml.dump(contents, indent=4, Dumper=NoAliasDumper)
 
-        filename = template     
+        contents: str = yaml.dump(contents, indent=4, Dumper=NoAliasDumper)
+
+        filename = template
 
         def uptodate() -> bool:
             True
             # try:
             #     return os.path.getmtime(filename) == mtime
             # except OSError:
-            #     return False      
+            #     return False
 
         return contents, filename, uptodate
 
-    def get_parameters(
-        self, template: str
-    ):
+    def get_parameters(self, template: str):
 
         contents = self._get_source_dict(template)
         contents["datastore"] = contents
         contents["table"] = {}
         return contents
-
-
-
-    def list_templates(self) -> t.List[str]:
-        templates = []
-        for k, v in self.master_metadata.items():
-            for ki in v.keys():
-                if k != "Datastore":
-                    key = f"{k}{self._KEY_SEPERATOR}{ki}" 
-                    templates.append(key)
-                else:
-                    for kj in v[ki]["datastores"].keys():
-                        keys = [k, ki, "datastores", kj]
-                        key = self._KEY_SEPERATOR.join(keys)
-                        templates.append(key)
-
-        return templates
-
