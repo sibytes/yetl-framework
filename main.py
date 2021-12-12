@@ -11,7 +11,7 @@
 
 
 from pprint import pprint
-from yetl.metasource.metasource import Builder
+from yetl.metasource import Builder
 templates = Builder.build("./project")
 
 for i in range(len(templates)):

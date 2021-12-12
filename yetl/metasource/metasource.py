@@ -23,7 +23,7 @@ class Builder:
         env = Environment(loader=loader, undefined=undefined)
         tpt_datastores = env.list_templates(
             filter_func=FileMetasource.template_filter("Datastore"))
-        print(tpt_datastores)
+
         return [Builder._render(tpt, env, loader) for tpt in tpt_datastores]
             
 
