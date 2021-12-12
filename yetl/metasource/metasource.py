@@ -88,9 +88,14 @@ class FileMetasource(BaseLoader):
             raise Exception(f"invalid {self._API_VESRION} uri")
 
     def _lookup_index(self, data: dict, index: t.Union[str, list]):
+        """ Returns an inner dictionary from a dictionary using a list of list
 
+            The list of keys can explicitly be a list or a character separated
+            string where the separator is defined in self._KEY_SEPERATOR.
+        
+        """
         if isinstance(index, str):
-            index = index.split("!")
+            index = index.split(self._KEY_SEPERATOR)
 
         n = data
         for k in index:
