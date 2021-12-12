@@ -166,7 +166,7 @@ class FileMetasource(BaseLoader):
 
                     f = self._open_if_exists(metafile)
                     if f is None:
-                        continue
+                        raise TemplateNotFound(metafile)
                     try:
                         metadata: dict = yaml.safe_load(f)
                     finally:
@@ -269,6 +269,8 @@ class FileMetasource(BaseLoader):
         f = self._open_if_exists(file_index[2])
         try:
             data = yaml.safe_load(f)
+        except:
+            raise TemplateNotFound(file_index[2])
         finally:
             f.close()
 
@@ -289,7 +291,10 @@ class FileMetasource(BaseLoader):
         # up the dictionary and return a subset of the file
         # as a template.
         if dict_index:
-            data = self._lookup_index(data, dict_index)
+            try:
+                data = self._lookup_index(data, dict_index)
+            except:
+                raise TemplateNotFound(index)
 
         return data
 
