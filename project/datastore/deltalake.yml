@@ -9,19 +9,19 @@ datastores:
     account: adlsgeneva
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
-    dataset: "./dataset/deltalake.yml"
+    dataset: "./project/dataset/deltalake.yml"
 
   raw_jaffleshop:
     name: raw_jaffleshop
     schema: jaffleshop
     container: raw
-    table_schema: "./dataset/jshop_schema.yml"
+    table_schema: "./project/dataset/jshop_schema.yml"
 
   raw_stripe: 
     name: raw_jaffleshop
     schema: stripe
     container: raw
-    table_schema: "./dataset/stripe_schema.yml"
+    table_schema: "./project/dataset/stripe_schema.yml"
 
   jaffleshop: 
     name: jaffleshop

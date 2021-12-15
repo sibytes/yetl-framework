@@ -13,7 +13,7 @@ class Builder:
 
     _linked_index_resolvers = {
         "table_schema" : ["Dataset", "TableSchema"],
-        "dataset": ["Dataset"]
+        "dataset": ["Dataset", "*"]
     }
 
     @classmethod
@@ -21,17 +21,37 @@ class Builder:
 
         loader = FileMetasource(searchpath=searchpath)
         env = Environment(loader=loader, undefined=undefined)
-        tpt_datastores = env.list_templates()
-            # filter_func=FileMetasource.template_filter("Datastore"))
+        tpt_datastores = Builder._list_templates(env, "Datastore")
 
-        return [Builder._render(tpt, env, loader) for tpt in tpt_datastores]
+        for tpt_ds in tpt_datastores:
+            ds = Builder._render(tpt_ds, env, loader)
+
+            child_templates = dict(cls._linked_index_resolvers)
+            for k, v in child_templates.items():
+                if k in ds.keys():
+                    try:
+                        tpt = Builder._list_templates(env, *v, ds[k])[0]
+                    except:
+                        raise Exception(f"template for search for {v} can't be found")
+
+                    child_templates[k] = Builder._render(tpt, env, loader)
+
+        return child_templates
+        # return [Builder._render(tpt, env, loader) for tpt in tpt_datastores]
             
 
     @classmethod
     def _render(cls, template_index:str, env:Environment, loader):
         template = env.get_template(template_index)
+        rendered = template.render(loader.get_parameters(template_index))
+        rendered_dict = yaml.safe_load(rendered)
+        return rendered_dict
 
-        return template.render(loader.get_parameters(template_index))
+    @classmethod
+    def _list_templates(cls, env:Environment, *args):
+        return env.list_templates(
+            filter_func=FileMetasource.template_filter(*args))
+
 
 
 class FileMetasource(BaseLoader):
@@ -251,6 +271,7 @@ class FileMetasource(BaseLoader):
             for n in range(len(args)):
                 try:
                     r = i.split(key_sep)[n].lower() == args[n].lower()
+                    r = r or args[n] == "*"
                 except:
                     r = False
                 list_boolean.append(r)

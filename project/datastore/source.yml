@@ -14,8 +14,8 @@ datastores:
 
   source_jaffle_shop: 
     schema: jaffle_shop
-    dataset: ./dataset/jshop_schema.yml
+    dataset: ./project/dataset/jshop_schema.yml
 
   source_stripe: 
     schema: stripe
-    dataset: ./dataset/stripe_schema.yml
+    dataset: ./project/dataset/stripe_schema.yml
