@@ -1,0 +1,17 @@
+[
+ 'Secrets!SecretsFile!./project/secrets.yml',
+ 'Project!Project!./project/project.yml',
+ 'TypeMap!SqlServer!./project/type_map/sql_server.yml',
+ 'Dataset!TableSchema!./project/dataset/stripe_schema.yml',
+ 'Dataset!CSV!./project/dataset/csv.yml',
+ 'Dataset!Deltalake!./project/dataset/deltalake.yml',
+ 'Dataset!SQL!./project/dataset/sql.yml',
+ 'Dataset!TableSchema!./project/dataset/jshop_schema.yml',
+ 'Datastore!SqlServer!./project/datastore/source.yml!datastores!source_jaffle_shop',
+ 'Datastore!SqlServer!./project/datastore/source.yml!datastores!source_stripe',
+ 'Datastore!Adls!./project/datastore/landing.yml!datastores!landing_jaffleshop',
+ 'Datastore!Adls!./project/datastore/landing.yml!datastores!landing_stripe',
+ 'Datastore!Adls!./project/datastore/deltalake.yml!datastores!raw_jaffleshop',
+ 'Datastore!Adls!./project/datastore/deltalake.yml!datastores!raw_stripe',
+ 'Datastore!Adls!./project/datastore/deltalake.yml!datastores!jaffleshop'
+]

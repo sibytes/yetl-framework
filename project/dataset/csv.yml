@@ -5,12 +5,12 @@ dataset:
     read_options: 
       schema_versioning: true
       column_delimiter: ","
-      row_delimiter: "\n"
+      row_delimiter: "\\n"
       skip_line_count: 0
       column_names_ifr: true
-      escape_character: 
-      quote_character: 
-      null_value: 
+      escape_character: null
+      quote_character: null
+      null_value: null
       empty_column_null: true
       timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ
       date_format: yyyy-MM-dd

@@ -3,11 +3,13 @@ from os.path import getmtime
 import os
 import typing as t
 from collections import abc
+from ..logging import get_logger
 
 
 import yaml
 from collections import ChainMap
 
+logger = get_logger(__name__)
 
 class Builder:
 
@@ -19,31 +21,38 @@ class Builder:
     @classmethod
     def build(cls, searchpath:str, undefined: t.Type[Undefined] = Undefined) -> None:
 
+
         loader = FileMetasource(searchpath=searchpath)
         env = Environment(loader=loader, undefined=undefined)
-        tpt_datastores = Builder._list_templates(env, "Datastore")
+        i_datastores = Builder._list_templates(env, "Datastore")
+        # tpt_datastores = Builder._list_templates(env)
+        docs = []
 
-        for tpt_ds in tpt_datastores:
-            ds = Builder._render(tpt_ds, env, loader)
+        for i_ds in i_datastores:
+            ds = cls._render(i_ds, env)
+            ts = cls._linked_index_resolvers["table_schema"]
+            try:
+                i_table_schema = Builder._list_templates(env, *ts, ds["table_schema"])[0]
+            except:
+                raise Exception(f"template for search for {v} can't be found")                
+                
+            table_schema = cls._render(i_table_schema, env)
+            # for each table in table schema render out a datastore dataset.
 
-            child_templates = dict(cls._linked_index_resolvers)
-            for k, v in child_templates.items():
-                if k in ds.keys():
-                    try:
-                        tpt = Builder._list_templates(env, *v, ds[k])[0]
-                    except:
-                        raise Exception(f"template for search for {v} can't be found")
 
-                    child_templates[k] = Builder._render(tpt, env, loader)
 
-        return child_templates
-        # return [Builder._render(tpt, env, loader) for tpt in tpt_datastores]
+
+        #     ds = Builder._render(tpt_ds, env, loader.get_parameters(tpt_ds))
+        return docs
+
             
 
     @classmethod
-    def _render(cls, template_index:str, env:Environment, loader):
+    def _render(cls, template_index:str, env:Environment, parameters: dict={}):
+        logger.debug(f"Rendering template: {template_index}")
         template = env.get_template(template_index)
-        rendered = template.render(loader.get_parameters(template_index))
+        rendered = template.render(parameters)
+        logger.debug(f"Rendered Template: \n {rendered}")
         rendered_dict = yaml.safe_load(rendered)
         return rendered_dict
 

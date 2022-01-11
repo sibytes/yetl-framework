@@ -11,11 +11,12 @@ datastores:
     port: 5432
     user: "yetl"
     password: "secrets.jaffle_shop_sqlserver_password"
+    dataset: "./project/dataset/deltalake.yml"
 
   source_jaffle_shop: 
     schema: jaffle_shop
-    dataset: ./project/dataset/jshop_schema.yml
+    table_schema: ./project/dataset/jshop_schema.yml
 
   source_stripe: 
     schema: stripe
-    dataset: ./project/dataset/stripe_schema.yml
+    table_schema: ./project/dataset/stripe_schema.yml

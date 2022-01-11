@@ -1,5 +1,5 @@
 import os
-from ..logging import getLogger
+from ..logging import get_logger
 import yaml
 from ._exceptions import ProjectDirectoryNotSet, ProjectDirectoryNotExists
 from typing import List
@@ -19,7 +19,7 @@ class Project:
 class ProjectDeprecated:
     def __init__(self, project_path: str, project_path_is_variable: bool):
 
-        logger = getLogger(__name__)
+        logger = get_logger(__name__)
         logger.info(
             f"building project path={project_path}, path_is_variable={project_path_is_variable}"
         )

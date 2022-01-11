@@ -5,8 +5,8 @@ dataset:
             namespace: yetl-framework.io
             type: Deltalake
             version: '1'
-        name: '{{ no such element: dict object['schema'] }}_{{ no such element: dict object['name'] }}'
-        path: '{{ no such element: dict object['container'] }}/{{ no such element: dict object['name'] }}/{{ no such element: dict object['classification'] }}/{{ no such element: dict object['schema'] }}'
+        name: _
+        path: ///
         write_options:
             mergeschema: true
             mode: append

@@ -1,4 +1,4 @@
-abfss: 'landing@adlsgeneva.dfs.core.windows.net'
+abfss: landing@adlsgeneva.dfs.core.windows.net
 account: adlsgeneva
 apiVersion:
     base: Datastore
@@ -6,9 +6,9 @@ apiVersion:
     type: Adls
     version: '1'
 container: landing
-dataset: ./dataset/csv.yml
+dataset: ./project/dataset/csv.yml
 dbfs: mnt/landing
 description: Landing ADLS store for jaffleshop
 name: jaffleshop
 schema: jaffleshop
-table_schema: ./dataset/jshop_schema.yml
+table_schema: ./project/dataset/jshop_schema.yml

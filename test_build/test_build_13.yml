@@ -1,4 +1,4 @@
-abfss: 'prepared@adlsgeneva.dfs.core.windows.net'
+abfss: prepared@adlsgeneva.dfs.core.windows.net
 account: adlsgeneva
 apiVersion:
     base: Datastore
@@ -6,7 +6,7 @@ apiVersion:
     type: Adls
     version: '1'
 container: prepared
-dataset: ./dataset/deltalake.yml
+dataset: ./project/dataset/deltalake.yml
 dbfs: mnt/prepared
 description: Deltalake store for jaffleshop
 name: jaffleshop
