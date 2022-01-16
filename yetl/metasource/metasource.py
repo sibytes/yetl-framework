@@ -13,14 +13,14 @@ from collections import ChainMap
 logger = get_logger(__name__)
 
 
-
 class FileMetasource(BaseLoader):
 
     _API_VESRION = "apiVersion"
     _API_NAMESPACE = "yetl-framework.io"
     _API_DEFAULT = "default"
     _INDEX_SEPARATOR = "!"
-    _ENABLE_DICT_INDEX = ["Datastore"]
+    _ENABLE_DICT_INDEX_BASES = ["Datastore", "Dataset"]
+    _DISABLE_DICT_INDEX_TYPES = ["TableSchema"]
 
     def __init__(
         self,
@@ -93,11 +93,11 @@ class FileMetasource(BaseLoader):
             raise Exception(f"invalid {self._API_VESRION} uri")
 
     def _lookup_index(self, data: dict, index: t.Union[str, list]):
-        """ Returns an inner dictionary from a dictionary using a list of list
+        """Returns an inner dictionary from a dictionary using a list of list
 
-            The list of keys can explicitly be a list or a character separated
-            string where the separator is defined in self._INDEX_SEPARATOR.
-        
+        The list of keys can explicitly be a list or a character separated
+        string where the separator is defined in self._INDEX_SEPARATOR.
+
         """
         if isinstance(index, str):
             index = index.split(self._INDEX_SEPARATOR)
@@ -118,46 +118,46 @@ class FileMetasource(BaseLoader):
         return open(filename, mode)
 
     def _index(self):
-        """ Indexes the templates so that component parts
-            of a pipeline can be easily found.
+        """Indexes the templates so that component parts
+        of a pipeline can be easily found.
 
-            Metadata is organised for the convenience of the user. This
-            means we have a bit work to do to peice things together for
-            templating. This procedure creates an index that allows component
-            objects to be easily found. Ultimately this means that templates
-            can be defined an isolated at lower grain than file which is useful
-            to allow the metadata to be declared in a convenient way for the user
-            but render in way that needed for the yetl.
-            
-            The index is in 2 parts:
+        Metadata is organised for the convenience of the user. This
+        means we have a bit work to do to peice things together for
+        templating. This procedure creates an index that allows component
+        objects to be easily found. Ultimately this means that templates
+        can be defined an isolated at lower grain than file which is useful
+        to allow the metadata to be declared in a convenient way for the user
+        but render in way that needed for the yetl.
 
-            Part 1:
-                base_type!type!filepath
-                
-                Part 1 is mandatory and makes it easy to find the file for 
-                certain types of objects. Not that objects are defined in 
-                the file yaml description using apiVersion property. For example:
+        The index is in 2 parts:
 
-                    Dataset!Deltalake!./project/dataset/mydataset.yml
+        Part 1:
+            base_type!type!filepath
 
-            Part 2:
-                level_1_dict_key!level_2_dict_key!... and so on
+            Part 1 is mandatory and makes it easy to find the file for
+            certain types of objects. Not that objects are defined in
+            the file yaml description using apiVersion property. For example:
 
-                Part 2 is option and is dictionary key path to the object
-                of concern with the template. This allows many objects
-                to make use of defaults in a yaml definition but are
-                in fact separate objects. Yaml definitions will only have
-                intradocument key indexes where it makes sense e.g. datastore.
+                Dataset!Deltalake!./project/dataset/mydataset.yml
 
-                    datastores!my_datastore
+        Part 2:
+            level_1_dict_key!level_2_dict_key!... and so on
 
-            Final example being:
+            Part 2 is option and is dictionary key path to the object
+            of concern with the template. This allows many objects
+            to make use of defaults in a yaml definition but are
+            in fact separate objects. Yaml definitions will only have
+            intradocument key indexes where it makes sense e.g. datastore.
 
-                Dataset!Deltalake!./project/dataset/mydataset.yml!datastores!my_datastore
+                datastores!my_datastore
+
+        Final example being:
+
+            Dataset!Deltalake!./project/dataset/mydataset.yml!datastores!my_datastore
 
 
 
-        
+
         """
         metadata_index = list()
         # walk the files in the template home dir
@@ -192,7 +192,9 @@ class FileMetasource(BaseLoader):
                     type = api_version["type"]
                     path = f"{dirpath}/{filename}"
 
-                    if base in self._ENABLE_DICT_INDEX:
+                    if base in self._ENABLE_DICT_INDEX_BASES and (
+                        type not in self._DISABLE_DICT_INDEX_TYPES
+                    ):
                         for k, v in metadata.items():
                             if isinstance(v, dict):
                                 for ki, vi in v.items():
@@ -212,16 +214,16 @@ class FileMetasource(BaseLoader):
 
     @classmethod
     def template_filter(cls, *args):
-        """ Returns a filter index function for jinja template listing
+        """Returns a filter index function for jinja template listing
 
-            Returns a function that allows arguments to be passed in to
-            filter a sub-set template indexes.
+        Returns a function that allows arguments to be passed in to
+        filter a sub-set template indexes.
 
-            e.g. we can call the following to return the 
-            Datastore!Adls template indexes:
+        e.g. we can call the following to return the
+        Datastore!Adls template indexes:
 
-            templateEnv.list_templates(filter_func=FileMetasource.template_filter("Datastore", "Adls"))
-        
+        templateEnv.list_templates(filter_func=FileMetasource.template_filter("Datastore", "Adls"))
+
         """
         key_sep = cls._INDEX_SEPARATOR
 
@@ -245,22 +247,22 @@ class FileMetasource(BaseLoader):
         return self._index()
 
     def get_source_dict(self, index: str):
-        """ Given a template index return the content.
+        """Given a template index return the content.
 
-            The 1st part of the index is used to the return the file.
-            The file is loaded and if there is a second part of the index
-            this is used to return a subset or the contained dictionary.
+        The 1st part of the index is used to the return the file.
+        The file is loaded and if there is a second part of the index
+        this is used to return a subset or the contained dictionary.
 
-            Once the dictionary is returned we must expand the defaults.
-            Default in the templates allow object level defaults to be 
-            declared which apply to the abbreviated objects that follow.
-            This makes it very convenient for the users to create concise
-            templates. However we need to do a bit of work to fill these
-            defaults into the objects before we render the templates since
-            some files contain multiple templates and we may only render
-            the relevant templates and so the defaults need to be filled
-            in before hand.
-        
+        Once the dictionary is returned we must expand the defaults.
+        Default in the templates allow object level defaults to be
+        declared which apply to the abbreviated objects that follow.
+        This makes it very convenient for the users to create concise
+        templates. However we need to do a bit of work to fill these
+        defaults into the objects before we render the templates since
+        some files contain multiple templates and we may only render
+        the relevant templates and so the defaults need to be filled
+        in before hand.
+
         """
 
         # split out the file index and dictationary key index
@@ -281,7 +283,7 @@ class FileMetasource(BaseLoader):
             f.close()
 
         # parse out the API version, since we fill this into the defaults also
-        # it's useful for serialising into an object api following template 
+        # it's useful for serialising into an object api following template
         # rendering
         try:
             api_version = data[self._API_VESRION]
@@ -307,9 +309,7 @@ class FileMetasource(BaseLoader):
     def get_source(
         self, environment: Environment, template: str
     ) -> t.Tuple[str, str, t.Callable[[], bool]]:
-        """
-        
-        """
+        """ """
 
         # Lookup the template using the template index.
         contents = self.get_source_dict(template)
@@ -344,47 +344,51 @@ class FileMetasource(BaseLoader):
 class Builder:
 
     _linked_index_resolvers = {
-        "table_schema" : ["Dataset", "TableSchema"],
-        "dataset": ["Dataset", "*"]
+        "table_schema": ["Dataset", "TableSchema"],
+        "dataset": ["Dataset", "*"],
     }
 
     @classmethod
-    def build(cls, searchpath:str, undefined: t.Type[Undefined] = Undefined) -> None:
-
+    def build(cls, searchpath: str, undefined: t.Type[Undefined] = Undefined) -> None:
 
         loader = FileMetasource(searchpath=searchpath)
         env = Environment(loader=loader, undefined=undefined)
         i_datastores = Builder._list_templates(env, "Datastore")
-        # tpt_datastores = Builder._list_templates(env)
+        tpt_datastores = Builder._list_templates(env)
         import pprint
-        # pprint.pprint(tpt_datastores)
+
+        pprint.pprint(tpt_datastores)
 
         docs = []
 
         for i_ds in i_datastores:
-            table_schema:dict = None
-            dataset:dict = None
+            table_schema: dict = None
+            dataset: dict = None
 
             datastore_params = loader.get_source_dict(i_ds)
             ds = cls._render(i_ds, env, datastore_params)
 
             dataset_idx = Builder._get_linked_index(ds, "dataset", env, loader)
             # # dataset = loader.get_source_dict(index)
-            dataset_params = { "datastore" : ds }
-            table_schema_idx = Builder._get_linked_index(ds, "table_schema", env, loader)
+            dataset_params = {"datastore": ds}
+            table_schema_idx = Builder._get_linked_index(
+                ds, "table_schema", env, loader
+            )
             # if there is a table schema then render a metadoc for every table
             if table_schema_idx:
-                
+
                 table_schema = loader.get_source_dict(table_schema_idx)
 
                 for table, schema in table_schema["dataset"].items():
-                    
+
                     schema["name"] = table
                     dataset_params["table"] = schema
 
-                    metadoc = {"datastore" : ds}
+                    metadoc = {"datastore": ds}
                     try:
-                        rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
+                        rendered_dataset = Builder._render(
+                            dataset_idx, env, dataset_params
+                        )
                     except:
                         rendered_dataset = loader.get_source_dict(dataset_idx)
 
@@ -395,7 +399,7 @@ class Builder:
             # if there is no table schema then we're not metadata driving the dataset
             # in this case it's handle generically or it delcared specifically.
             else:
-                metadoc = {"datastore" : ds}
+                metadoc = {"datastore": ds}
                 try:
                     rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
                 except:
@@ -403,12 +407,13 @@ class Builder:
                     metadoc["dataset"] = rendered_dataset["dataset"]
                 docs.append(metadoc)
 
-            
         #     ds = Builder._render(tpt_ds, env, loader.get_parameters(tpt_ds))
         return docs
 
     @classmethod
-    def _get_linked_index(cls, datastore:dict, resolver:str, env:Environment, loader:FileMetasource) -> dict:
+    def _get_linked_index(
+        cls, datastore: dict, resolver: str, env: Environment, loader: FileMetasource
+    ) -> dict:
 
         lkup = cls._linked_index_resolvers[resolver]
 
@@ -422,9 +427,13 @@ class Builder:
             templates = Builder._list_templates(env, *lkup, path)
 
             if len(templates) == 0:
-                raise Exception(f"template for search for {lkup} can't be found. The the path {path} is correct.")    
+                raise Exception(
+                    f"template for search for {lkup} can't be found. The the path {path} is correct."
+                )
             elif len(templates) > 1:
-                raise Exception(f"template for search for {lkup} found more than one, index not unique")
+                raise Exception(
+                    f"template for search for {lkup} found more than one, index not unique"
+                )
 
             i_template = templates[0]
 
@@ -432,17 +441,17 @@ class Builder:
         else:
             return None
 
-
     @classmethod
-    def _render(cls, template_index:str, env:Environment, parameters: dict={}) -> dict:
+    def _render(
+        cls, template_index: str, env: Environment, parameters: dict = {}
+    ) -> dict:
         logger.debug(f"Rendering template: {template_index}")
         template = env.get_template(template_index)
         rendered = template.render(parameters)
         logger.debug(f"Rendered Template: \n {rendered}")
-        rendered_dict:dict = yaml.safe_load(rendered)
+        rendered_dict: dict = yaml.safe_load(rendered)
         return rendered_dict
 
     @classmethod
-    def _list_templates(cls, env:Environment, *args):
-        return env.list_templates(
-            filter_func=FileMetasource.template_filter(*args))
+    def _list_templates(cls, env: Environment, *args):
+        return env.list_templates(filter_func=FileMetasource.template_filter(*args))
