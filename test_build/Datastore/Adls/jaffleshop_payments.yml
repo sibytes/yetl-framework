@@ -1,0 +1,108 @@
+dataset:
+    permissive:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: CSV
+            version: '1'
+        bad_records_path: null
+        columnNameOfCorruptRecord: null
+        mode: PERMISSIVE
+        name: payments
+        read_options:
+            bad_records_path: container/datastore/exceptions/schema/partition/version
+            columnNameOfCorruptRecord: _corrupt_record
+            column_delimiter: ','
+            column_names_ifr: true
+            compression_type: none
+            data_schema:
+                json_column_schema: json_stripe_payments_.json
+                json_table_schema: json_stripe_payments.json
+                schema_path: landing/spark_schema/jaffleshop
+                spark_column_schema: spark_stripe_payments_.json
+                spark_table_schema: spark_stripe_payments.json
+            date_format: yyyy-MM-dd
+            days_retention_period: 30
+            empty_column_null: true
+            encoding: utf-8
+            escape_character: null
+            extension: csv
+            filename: jaffleshop-.ext
+            mode: DROPMALFORMED
+            null_value: null
+            partition_file_format: YYYY-mm-dd
+            partition_path_format: YYYY/mm/dd
+            path: landing/jaffleshop//stripe//
+            quote_character: null
+            row_delimiter: \n
+            schema_versioning: true
+            skip_line_count: 0
+            timestamp_format: yyyy-MM-ddTHH:mm:ss.mmmZ
+datastore:
+    abfss: landing@adlsgeneva.dfs.core.windows.net
+    account: adlsgeneva
+    apiVersion:
+        base: Datastore
+        namespace: yetl-framework.io
+        type: Adls
+        version: '1'
+    container: landing
+    dataset: ./project/dataset/csv.yml
+    dbfs: mnt/landing
+    description: Landing ADLS store for jaffleshop
+    name: jaffleshop
+    schema: stripe
+    table_schema: ./project/table_schema/stripe_schema.yml
+table_schema:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: TableSchema
+        version: '1'
+    columns:
+        _batched_at:
+            description: null
+            nullable: false
+            ordinal: 7
+            type: null
+        amount:
+            description: null
+            nullable: false
+            ordinal: 5
+            type: int
+        created:
+            description: null
+            nullable: false
+            ordinal: 6
+            type: datetime
+        id:
+            description: null
+            nullable: false
+            ordinal: 1
+            type: int
+        orderid:
+            description: null
+            nullable: false
+            ordinal: 2
+            type: int
+        paymentmethod:
+            description: null
+            nullable: false
+            ordinal: 3
+            type: varchar(50)
+        status:
+            description: null
+            nullable: false
+            ordinal: 4
+            type: varchar(50)
+    foreign_keys:
+        orderid:
+            column: id
+            schema: jaffle_shop
+            table: orders
+    name: payments
+    partitioning: []
+    unique_identifiers:
+    - id
+    watermarks:
+    - _batched_at

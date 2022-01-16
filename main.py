@@ -39,7 +39,10 @@ for i in templates:
         dataset_name = i["dataset"]["permissive"]["name"]
     except:
         pass
-
+    try:
+        dataset_name = i["dataset"]["name"]
+    except:
+        pass
 
     path = f"./{test_dir}/{base}/{type}"
     if not os.path.exists(path):

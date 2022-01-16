@@ -1,12 +1,6 @@
 dataset:
-    default:
-        apiVersion:
-            base: Dataset
-            namespace: yetl-framework.io
-            type: SQL
-            version: '1'
-        name: customers
-        query: select * from customers where 1 = 1
+    name: customers
+    query: select * from customers where 1 = 1
 datastore:
     apiVersion:
         base: Datastore
