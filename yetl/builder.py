@@ -2,7 +2,7 @@
 from jinja2 import Environment, Undefined
 import typing as t
 from .logging import get_logger
-from .metasource import FileMetasource
+from .metasource import (FileMetasource, Index)
 import yaml
 
 logger = get_logger(__name__)
@@ -126,4 +126,4 @@ class Builder:
 
     @classmethod
     def _list_templates(cls, env: Environment, *args):
-        return env.list_templates(filter_func=FileMetasource.template_filter(*args))
+        return env.list_templates(filter_func=Index.template_filter(*args))
