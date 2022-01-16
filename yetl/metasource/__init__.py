@@ -1,3 +1,3 @@
-from .metasource import Builder
+from .metasource import FileMetasource
 
-__all__ = ["Builder"]
+__all__ = ["FileMetasource"]

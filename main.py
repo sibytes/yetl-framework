@@ -13,7 +13,7 @@
 from re import template
 from jinja2 import DebugUndefined, Undefined
 from pprint import pprint
-from yetl.metasource import Builder
+from yetl import Builder
 import yaml
 import os, shutil
 
