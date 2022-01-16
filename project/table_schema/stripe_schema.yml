@@ -1,8 +1,6 @@
 apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
-  default:
   payments:
-    table: payments
     columns:
       id:
         type: int

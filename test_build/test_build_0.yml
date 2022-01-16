@@ -1,9 +1,0 @@
-secrets:
-    secrets_1:
-        apiVersion:
-            base: Secrets
-            namespace: yetl-framework.io
-            type: SecretsFile
-            version: '1'
-        jaffle_shop_postgres_password: postgres
-        jaffle_shop_sqlserver_password: sql_server

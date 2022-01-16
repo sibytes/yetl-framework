@@ -1,8 +1,6 @@
 apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
-  default: null
   customers:
-    table: customers
     columns:
       - column: id
         type: int
@@ -25,7 +23,6 @@ dataset:
     partitioning: []
 
   orders: 
-    table: orders
     columns:
       - column: id
         type: int

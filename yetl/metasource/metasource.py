@@ -1,3 +1,4 @@
+from typing_extensions import OrderedDict
 from jinja2 import BaseLoader, TemplateNotFound, Environment, Undefined
 from os.path import getmtime
 import os
@@ -10,56 +11,6 @@ import yaml
 from collections import ChainMap
 
 logger = get_logger(__name__)
-
-class Builder:
-
-    _linked_index_resolvers = {
-        "table_schema" : ["Dataset", "TableSchema"],
-        "dataset": ["Dataset", "*"]
-    }
-
-    @classmethod
-    def build(cls, searchpath:str, undefined: t.Type[Undefined] = Undefined) -> None:
-
-
-        loader = FileMetasource(searchpath=searchpath)
-        env = Environment(loader=loader, undefined=undefined)
-        i_datastores = Builder._list_templates(env, "Datastore")
-        # tpt_datastores = Builder._list_templates(env)
-        docs = []
-
-        for i_ds in i_datastores:
-            ds = cls._render(i_ds, env)
-            ts = cls._linked_index_resolvers["table_schema"]
-            try:
-                i_table_schema = Builder._list_templates(env, *ts, ds["table_schema"])[0]
-            except:
-                raise Exception(f"template for search for {v} can't be found")                
-                
-            table_schema = cls._render(i_table_schema, env)
-            # for each table in table schema render out a datastore dataset.
-
-
-
-
-        #     ds = Builder._render(tpt_ds, env, loader.get_parameters(tpt_ds))
-        return docs
-
-            
-
-    @classmethod
-    def _render(cls, template_index:str, env:Environment, parameters: dict={}):
-        logger.debug(f"Rendering template: {template_index}")
-        template = env.get_template(template_index)
-        rendered = template.render(parameters)
-        logger.debug(f"Rendered Template: \n {rendered}")
-        rendered_dict = yaml.safe_load(rendered)
-        return rendered_dict
-
-    @classmethod
-    def _list_templates(cls, env:Environment, *args):
-        return env.list_templates(
-            filter_func=FileMetasource.template_filter(*args))
 
 
 
@@ -293,7 +244,7 @@ class FileMetasource(BaseLoader):
         """List the template indexes"""
         return self._index()
 
-    def _get_source_dict(self, index: str):
+    def get_source_dict(self, index: str):
         """ Given a template index return the content.
 
             The 1st part of the index is used to the return the file.
@@ -361,7 +312,7 @@ class FileMetasource(BaseLoader):
         """
 
         # Lookup the template using the template index.
-        contents = self._get_source_dict(template)
+        contents = self.get_source_dict(template)
 
         # dump out to yaml text
         class NoAliasDumper(yaml.Dumper):
@@ -388,3 +339,107 @@ class FileMetasource(BaseLoader):
         contents["datastore"] = contents
         contents["table"] = {}
         return contents
+
+
+class Builder:
+
+    _linked_index_resolvers = {
+        "table_schema" : ["Dataset", "TableSchema"],
+        "dataset": ["Dataset", "*"]
+    }
+
+    @classmethod
+    def build(cls, searchpath:str, undefined: t.Type[Undefined] = Undefined) -> None:
+
+
+        loader = FileMetasource(searchpath=searchpath)
+        env = Environment(loader=loader, undefined=undefined)
+        i_datastores = Builder._list_templates(env, "Datastore")
+        # tpt_datastores = Builder._list_templates(env)
+        import pprint
+        # pprint.pprint(tpt_datastores)
+
+        docs = []
+
+        for i_ds in i_datastores:
+            table_schema:dict = None
+            dataset:dict = None
+
+            datastore_params = loader.get_source_dict(i_ds)
+            ds = cls._render(i_ds, env, datastore_params)
+
+            dataset_idx = Builder._get_linked_index(ds, "dataset", env, loader)
+            # # dataset = loader.get_source_dict(index)
+            dataset_params = { "datastore" : ds }
+            table_schema_idx = Builder._get_linked_index(ds, "table_schema", env, loader)
+            if table_schema_idx:
+                metadoc = {"datastore" : ds}
+                table_schema = loader.get_source_dict(table_schema_idx)
+                # pprint.pprint(table_schema)
+                
+                for table, schema in table_schema["dataset"].items():
+
+                    schema["name"] = table
+                    dataset_params["table"] = schema
+
+                    try:
+                        rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
+                    except:
+                        rendered_dataset = loader.get_source_dict(dataset_idx)
+
+                    metadoc["table_schema"] = schema
+                    metadoc["dataset"] = rendered_dataset["dataset"]
+
+                    docs.append(metadoc)
+            else:
+                try:
+                    rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
+                except:
+                    rendered_dataset = loader.get_source_dict(dataset_idx)
+                    metadoc["dataset"] = rendered_dataset["dataset"]
+
+                docs.append(metadoc)
+
+            
+        #     ds = Builder._render(tpt_ds, env, loader.get_parameters(tpt_ds))
+        return docs
+
+    @classmethod
+    def _get_linked_index(cls, datastore:dict, resolver:str, env:Environment, loader:FileMetasource) -> dict:
+
+        lkup = cls._linked_index_resolvers[resolver]
+
+        # search for a template <type>!<sub_type>!<[path]>
+        path = datastore.get(resolver)
+
+        # there may not always be a table_schema
+        # since we may not want to autogenerate metadata for tables schema_list
+        # we may want to build them more specifically.
+        if path:
+            templates = Builder._list_templates(env, *lkup, path)
+
+            if len(templates) == 0:
+                raise Exception(f"template for search for {lkup} can't be found. The the path {path} is correct.")    
+            elif len(templates) > 1:
+                raise Exception(f"template for search for {lkup} found more than one, index not unique")
+
+            i_template = templates[0]
+
+            return i_template
+        else:
+            return None
+
+
+    @classmethod
+    def _render(cls, template_index:str, env:Environment, parameters: dict={}) -> dict:
+        logger.debug(f"Rendering template: {template_index}")
+        template = env.get_template(template_index)
+        rendered = template.render(parameters)
+        logger.debug(f"Rendered Template: \n {rendered}")
+        rendered_dict:dict = yaml.safe_load(rendered)
+        return rendered_dict
+
+    @classmethod
+    def _list_templates(cls, env:Environment, *args):
+        return env.list_templates(
+            filter_func=FileMetasource.template_filter(*args))

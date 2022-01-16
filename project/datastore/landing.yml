@@ -14,12 +14,12 @@ datastores:
 
   landing_jaffleshop:
     schema: jaffleshop
-    table_schema: "./project/dataset/jshop_schema.yml"
+    table_schema: "./project/table_schema/jshop_schema.yml"
 
 
   landing_stripe: 
     schema: stripe
-    table_schema: "./project/dataset/stripe_schema.yml"
+    table_schema: "./project/table_schema/stripe_schema.yml"
 
 
 

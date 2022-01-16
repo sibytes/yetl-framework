@@ -1,0 +1,82 @@
+dataset:
+    default:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: Deltalake
+            version: '1'
+        name: '{{datastore.schema}}_{{table.name}}'
+        path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}'
+        write_options:
+            mergeschema: true
+            mode: append
+            partitions:
+            - partition
+datastore:
+    abfss: raw@adlsgeneva.dfs.core.windows.net
+    account: adlsgeneva
+    apiVersion:
+        base: Datastore
+        namespace: yetl-framework.io
+        type: Adls
+        version: '1'
+    container: raw
+    dataset: ./project/dataset/deltalake.yml
+    dbfs: mnt/raw
+    description: Deltalake store for raw_jaffleshop
+    name: raw_jaffleshop
+    schema: stripe
+    table_schema: ./project/table_schema/stripe_schema.yml
+table_schema:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: TableSchema
+        version: '1'
+    columns:
+        _batched_at:
+            description: null
+            nullable: false
+            ordinal: 7
+            type: null
+        amount:
+            description: null
+            nullable: false
+            ordinal: 5
+            type: int
+        created:
+            description: null
+            nullable: false
+            ordinal: 6
+            type: datetime
+        id:
+            description: null
+            nullable: false
+            ordinal: 1
+            type: int
+        orderid:
+            description: null
+            nullable: false
+            ordinal: 2
+            type: int
+        paymentmethod:
+            description: null
+            nullable: false
+            ordinal: 3
+            type: varchar(50)
+        status:
+            description: null
+            nullable: false
+            ordinal: 4
+            type: varchar(50)
+    foreign_keys:
+        orderid:
+            column: id
+            schema: jaffle_shop
+            table: orders
+    name: payments
+    partitioning: []
+    unique_identifiers:
+    - id
+    watermarks:
+    - _batched_at

@@ -15,13 +15,13 @@ datastores:
     name: raw_jaffleshop
     schema: jaffleshop
     container: raw
-    table_schema: "./project/dataset/jshop_schema.yml"
+    table_schema: "./project/table_schema/jshop_schema.yml"
 
   raw_stripe: 
     name: raw_jaffleshop
     schema: stripe
     container: raw
-    table_schema: "./project/dataset/stripe_schema.yml"
+    table_schema: "./project/table_schema/stripe_schema.yml"
 
   jaffleshop: 
     name: jaffleshop

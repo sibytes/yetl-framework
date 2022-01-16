@@ -10,10 +10,12 @@
 # df.show()
 
 
+from re import template
 from jinja2 import DebugUndefined, Undefined
 from pprint import pprint
 from yetl.metasource import Builder
 import yaml
+import os, shutil
 
 class NoAliasDumper(yaml.Dumper):
     def ignore_aliases(self, data):
@@ -21,8 +23,31 @@ class NoAliasDumper(yaml.Dumper):
 
 templates = Builder.build("./project", Undefined)
 
-for i in range(len(templates)):
-    with open(f"./test_build/test_build_{i}.yml", "w") as f:
-        f.write(yaml.dump(templates[i], indent=4, Dumper=NoAliasDumper))
+test_dir = "./test_build"
+if os.path.exists(test_dir) and os.path.isdir(test_dir):
+    shutil.rmtree(test_dir)
+
+for i in templates:
+    base = i["datastore"]["apiVersion"]["base"]
+    type = i["datastore"]["apiVersion"]["type"]
+    datastore_name = i["datastore"]["name"]
+    try:
+        dataset_name = i["dataset"]["default"]["name"]
+    except:
+        pass
+    try:
+        dataset_name = i["dataset"]["permissive"]["name"]
+    except:
+        pass
+
+
+    path = f"./{test_dir}/{base}/{type}"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    path = f"{path}/{datastore_name}_{dataset_name}.yml"
+
+    with open(path, "w") as f:
+        f.write(yaml.dump(i, indent=4, Dumper=NoAliasDumper))
 
 
