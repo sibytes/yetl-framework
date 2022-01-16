@@ -1,0 +1,53 @@
+dataset:
+    default:
+        apiVersion:
+            base: Dataset
+            namespace: yetl-framework.io
+            type: SQL
+            version: '1'
+        name: customers
+        query: select * from customers where 1 = 1
+datastore:
+    apiVersion:
+        base: Datastore
+        namespace: yetl-framework.io
+        type: SqlServer
+        version: '1'
+    compatibility: azure
+    dataset: ./project/dataset/sql.yml
+    description: Source transactional database store for jaffle_shop
+    name: jaffle_shop
+    password: secrets.jaffle_shop_sqlserver_password
+    port: 5432
+    schema: jaffle_shop
+    server: localhost
+    table_schema: ./project/table_schema/jshop_schema.yml
+    user: yetl
+table_schema:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: TableSchema
+        version: '1'
+    columns:
+    -   column: id
+        description: null
+        nullable: false
+        ordinal: 1
+        type: int
+    -   column: first_name
+        description: null
+        nullable: false
+        ordinal: 2
+        type: varchar(50)
+    -   column: last_name
+        description: null
+        nullable: false
+        ordinal: 3
+        type: varchar(50)
+    foreign_keys: []
+    name: customers
+    partitioning: []
+    unique_identifiers:
+    - id
+    watermarks: []

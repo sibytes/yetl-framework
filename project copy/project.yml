@@ -1,0 +1,26 @@
+apiVersion: yetl-framework.io/1/Project/Project
+
+environments:
+
+  local: 
+    project: ./project
+    secrets_file:
+      # important: in real projects ensure this file is in .gitignore
+      path: ./project/secrets.yml
+      secrets: secrets_1
+    spark:
+      master: local[2]
+      app_name: yetl_local
+      config: null
+
+  development:
+    name: development
+    project: dbfss://yetl/jaffle_shop/project
+    databricks_scope:
+      # databricks scope that holds the secrets
+      # can be keyvault backed
+      store: kv_dataplatform
+    spark:
+      master: local[*]
+      app_name: yetl_development
+      config: null

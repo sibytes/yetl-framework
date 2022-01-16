@@ -1,0 +1,60 @@
+apiVersion: yetl-framework.io/1/Dataset/TableSchema
+dataset:
+  customers:
+    columns:
+      - column: id
+        type: int
+        nullable: false
+        description: 
+        ordinal: 1
+      - column: first_name
+        type: varchar(50)
+        nullable: false
+        description: 
+        ordinal: 2
+      - column: last_name
+        type: varchar(50)
+        nullable: false
+        description: 
+        ordinal: 3
+    unique_identifiers: [id]
+    foreign_keys: []
+    watermarks: []
+    partitioning: []
+
+  orders: 
+    columns:
+      - column: id
+        type: int
+        nullable: false
+        description: 
+        ordinal: 1
+      - column: user_id
+        type: int
+        nullable: false
+        description: 
+        ordinal: 2
+      - column: order_date
+        type: date
+        nullable: false
+        description: 
+        ordinal: 3
+      - column: status
+        type: varchar(50)
+        nullable: false
+        description: 
+        ordinal: 4
+      - column: _etl_loaded_at
+        type: datetime
+        nullable: false
+        description: 
+        ordinal: 5
+    unique_identifiers: [id]
+    foreign_keys:
+      - column: user_id
+        reference:
+          schema: jaffle_shop
+          table: customers
+          column: id
+    watermarks: [_etl_loaded_at]
+    partitioning: []

@@ -372,16 +372,17 @@ class Builder:
             # # dataset = loader.get_source_dict(index)
             dataset_params = { "datastore" : ds }
             table_schema_idx = Builder._get_linked_index(ds, "table_schema", env, loader)
+            # if there is a table schema then render a metadoc for every table
             if table_schema_idx:
-                metadoc = {"datastore" : ds}
-                table_schema = loader.get_source_dict(table_schema_idx)
-                # pprint.pprint(table_schema)
                 
-                for table, schema in table_schema["dataset"].items():
+                table_schema = loader.get_source_dict(table_schema_idx)
 
+                for table, schema in table_schema["dataset"].items():
+                    
                     schema["name"] = table
                     dataset_params["table"] = schema
 
+                    metadoc = {"datastore" : ds}
                     try:
                         rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
                     except:
@@ -391,13 +392,15 @@ class Builder:
                     metadoc["dataset"] = rendered_dataset["dataset"]
 
                     docs.append(metadoc)
+            # if there is no table schema then we're not metadata driving the dataset
+            # in this case it's handle generically or it delcared specifically.
             else:
+                metadoc = {"datastore" : ds}
                 try:
                     rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
                 except:
                     rendered_dataset = loader.get_source_dict(dataset_idx)
                     metadoc["dataset"] = rendered_dataset["dataset"]
-
                 docs.append(metadoc)
 
             

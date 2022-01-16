@@ -3,15 +3,10 @@ dataset:
         apiVersion:
             base: Dataset
             namespace: yetl-framework.io
-            type: Deltalake
+            type: SQL
             version: '1'
-        name: jaffle_shop_orders
-        path: /jaffle_shop//jaffle_shop
-        write_options:
-            mergeschema: true
-            mode: append
-            partitions:
-            - partition
+        name: orders
+        query: select * from orders where 1 = 1
 datastore:
     apiVersion:
         base: Datastore
@@ -19,7 +14,7 @@ datastore:
         type: SqlServer
         version: '1'
     compatibility: azure
-    dataset: ./project/dataset/deltalake.yml
+    dataset: ./project/dataset/sql.yml
     description: Source transactional database store for jaffle_shop
     name: jaffle_shop
     password: secrets.jaffle_shop_sqlserver_password

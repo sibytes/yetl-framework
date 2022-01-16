@@ -3,30 +3,26 @@ dataset:
         apiVersion:
             base: Dataset
             namespace: yetl-framework.io
-            type: Deltalake
+            type: SQL
             version: '1'
-        name: '{{datastore.schema}}_{{table.name}}'
-        path: '{{datastore.container}}/{{datastore.name}}/{{table.classification}}/{{datastore.schema}}'
-        write_options:
-            mergeschema: true
-            mode: append
-            partitions:
-            - partition
+        name: payments
+        query: select * from payments where 1 = 1
 datastore:
-    abfss: raw@adlsgeneva.dfs.core.windows.net
-    account: adlsgeneva
     apiVersion:
         base: Datastore
         namespace: yetl-framework.io
-        type: Adls
+        type: SqlServer
         version: '1'
-    container: raw
-    dataset: ./project/dataset/deltalake.yml
-    dbfs: mnt/raw
-    description: Deltalake store for raw_jaffleshop
-    name: raw_jaffleshop
+    compatibility: azure
+    dataset: ./project/dataset/sql.yml
+    description: Source transactional database store for jaffle_shop
+    name: jaffle_shop
+    password: secrets.jaffle_shop_sqlserver_password
+    port: 5432
     schema: stripe
+    server: localhost
     table_schema: ./project/table_schema/stripe_schema.yml
+    user: yetl
 table_schema:
     apiVersion:
         base: Dataset

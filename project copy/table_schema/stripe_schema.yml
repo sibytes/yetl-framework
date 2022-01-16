@@ -1,0 +1,48 @@
+apiVersion: yetl-framework.io/1/Dataset/TableSchema
+dataset:
+  payments:
+    columns:
+      id:
+        type: int
+        nullable: false
+        description: 
+        ordinal: 1
+      orderid:
+        type: int
+        nullable: false
+        description: 
+        ordinal: 2
+      paymentmethod: 
+        type: varchar(50)
+        nullable: false
+        description: 
+        ordinal: 3
+      status: 
+        type: varchar(50)
+        nullable: false
+        description: 
+        ordinal: 4
+      amount: 
+        type: int
+        nullable: false
+        description: 
+        ordinal: 5
+      created: 
+        type: datetime
+        nullable: false
+        description: 
+        ordinal: 6
+      _batched_at: 
+        type: 
+        nullable: false
+        description: 
+        ordinal: 7
+    unique_identifiers: [id]
+    foreign_keys:
+      orderid:
+        schema: jaffle_shop
+        table: orders
+        column: id
+    watermarks:
+      - _batched_at
+    partitioning: []
