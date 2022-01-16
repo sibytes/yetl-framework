@@ -11,7 +11,7 @@ datastores:
     port: 5432
     user: "yetl"
     password: "secrets.jaffle_shop_sqlserver_password"
-    dataset: "./project/dataset/sql.yml!dataset!default"
+    dataset: "./project/dataset/sql.yml"
 
   source_jaffle_shop: 
     schema: jaffle_shop

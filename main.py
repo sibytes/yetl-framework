@@ -23,29 +23,18 @@ class NoAliasDumper(yaml.Dumper):
 
 templates = Builder.build("./project", Undefined)
 
-test_dir = "./test_build"
+test_dir = "./.project_build"
 if os.path.exists(test_dir) and os.path.isdir(test_dir):
     shutil.rmtree(test_dir)
 
 for i in templates:
-    base = i["datastore"]["apiVersion"]["base"]
     type = i["datastore"]["apiVersion"]["type"]
     datastore_name = i["datastore"]["name"]
     schema_name = i["datastore"]["schema"]
-    try:
-        dataset_name = i["dataset"]["default"]["name"]
-    except:
-        pass
-    try:
-        dataset_name = i["dataset"]["permissive"]["name"]
-    except:
-        pass
-    try:
-        dataset_name = i["dataset"]["name"]
-    except:
-        pass
+    dataset_name = i["dataset"]["name"]
 
-    path = f"./{test_dir}/{base}/{type}"
+
+    path = f"./{test_dir}/{type}"
     if not os.path.exists(path):
         os.makedirs(path)
 

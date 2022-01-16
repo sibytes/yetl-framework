@@ -10,12 +10,11 @@ datastores:
     account: adlsgeneva
     abfss: "{{container}}@{{account}}.dfs.core.windows.net"
     dbfs: "mnt/{{container}}"
-    dataset: ./project/dataset/csv.yml!dataset!default
+    dataset: ./project/dataset/csv.yml
 
   landing_jaffleshop:
     schema: jaffleshop
     table_schema: "./project/table_schema/jshop_schema.yml"
-
 
   landing_stripe: 
     schema: stripe

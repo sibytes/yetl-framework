@@ -1,6 +1,7 @@
 apiVersion: yetl-framework.io/1/Dataset/TableSchema
 dataset:
   customers:
+    classification: general
     columns:
       - column: id
         type: int
@@ -23,6 +24,7 @@ dataset:
     partitioning: []
 
   orders: 
+    classification: general
     columns:
       - column: id
         type: int

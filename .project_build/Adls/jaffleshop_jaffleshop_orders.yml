@@ -4,7 +4,7 @@ dataset:
         namespace: yetl-framework.io
         type: CSV
         version: '1'
-    name: payments
+    name: orders
     read_options:
         bad_records_path: container/datastore/exceptions/schema/partition/version
         columnNameOfCorruptRecord: _corrupt_record
@@ -12,11 +12,11 @@ dataset:
         column_names_ifr: true
         compression_type: none
         data_schema:
-            json_column_schema: json_stripe_payments_.json
-            json_table_schema: json_stripe_payments.json
+            json_column_schema: json_jaffleshop_orders_.json
+            json_table_schema: json_jaffleshop_orders.json
             schema_path: landing/spark_schema/jaffleshop
-            spark_column_schema: spark_stripe_payments_.json
-            spark_table_schema: spark_stripe_payments.json
+            spark_column_schema: spark_jaffleshop_orders_.json
+            spark_table_schema: spark_jaffleshop_orders.json
         date_format: yyyy-MM-dd
         days_retention_period: 30
         empty_column_null: true
@@ -28,7 +28,7 @@ dataset:
         null_value: null
         partition_file_format: YYYY-mm-dd
         partition_path_format: YYYY/mm/dd
-        path: landing/jaffleshop//stripe//
+        path: landing/jaffleshop/general/jaffleshop//
         quote_character: null
         row_delimiter: \n
         schema_versioning: true
@@ -43,62 +43,52 @@ datastore:
         type: Adls
         version: '1'
     container: landing
-    dataset: ./project/dataset/csv.yml!dataset!default
     dbfs: mnt/landing
     description: Landing ADLS store for jaffleshop
     name: jaffleshop
-    schema: stripe
-    table_schema: ./project/table_schema/stripe_schema.yml
+    schema: jaffleshop
 table_schema:
     apiVersion:
         base: Dataset
         namespace: yetl-framework.io
         type: TableSchema
         version: '1'
+    classification: general
     columns:
-        _batched_at:
-            description: null
-            nullable: false
-            ordinal: 7
-            type: null
-        amount:
-            description: null
-            nullable: false
-            ordinal: 5
-            type: int
-        created:
-            description: null
-            nullable: false
-            ordinal: 6
-            type: datetime
-        id:
-            description: null
-            nullable: false
-            ordinal: 1
-            type: int
-        orderid:
-            description: null
-            nullable: false
-            ordinal: 2
-            type: int
-        paymentmethod:
-            description: null
-            nullable: false
-            ordinal: 3
-            type: varchar(50)
-        status:
-            description: null
-            nullable: false
-            ordinal: 4
-            type: varchar(50)
+    -   column: id
+        description: null
+        nullable: false
+        ordinal: 1
+        type: int
+    -   column: user_id
+        description: null
+        nullable: false
+        ordinal: 2
+        type: int
+    -   column: order_date
+        description: null
+        nullable: false
+        ordinal: 3
+        type: date
+    -   column: status
+        description: null
+        nullable: false
+        ordinal: 4
+        type: varchar(50)
+    -   column: _etl_loaded_at
+        description: null
+        nullable: false
+        ordinal: 5
+        type: datetime
     foreign_keys:
-        orderid:
+    -   column: user_id
+        reference:
             column: id
             schema: jaffle_shop
-            table: orders
-    name: payments
+            table: customers
+    name: orders
     partitioning: []
     unique_identifiers:
     - id
     watermarks:
-    - _batched_at
+    - _etl_loaded_at

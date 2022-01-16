@@ -26,8 +26,10 @@ datastores:
   jaffleshop: 
     name: jaffleshop
     container: prepared
-    # note we have no table schema here
-    # that's because we're not going to autogenerate them 
+    dataset: "./project/dataset/deltalake.yml"
+    table_schema: "./project/table_schema/prepared_schema.yml"
+    # note we have the option of no table schema here
+    # if we're not going to autogenerate them 
 
 
 

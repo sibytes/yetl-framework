@@ -15,14 +15,12 @@ datastore:
         type: SqlServer
         version: '1'
     compatibility: azure
-    dataset: ./project/dataset/sql.yml!dataset!default
     description: Source transactional database store for jaffle_shop
     name: jaffle_shop
     password: secrets.jaffle_shop_sqlserver_password
     port: 5432
     schema: stripe
     server: localhost
-    table_schema: ./project/table_schema/stripe_schema.yml
     user: yetl
 table_schema:
     apiVersion:
@@ -30,6 +28,7 @@ table_schema:
         namespace: yetl-framework.io
         type: TableSchema
         version: '1'
+    classification: general
     columns:
         _batched_at:
             description: null

@@ -4,8 +4,8 @@ dataset:
         namespace: yetl-framework.io
         type: SQL
         version: '1'
-    name: orders
-    query: 'select * from orders where 1 = 1
+    name: customers
+    query: 'select * from customers where 1 = 1
 
         '
 datastore:
@@ -15,14 +15,12 @@ datastore:
         type: SqlServer
         version: '1'
     compatibility: azure
-    dataset: ./project/dataset/sql.yml!dataset!default
     description: Source transactional database store for jaffle_shop
     name: jaffle_shop
     password: secrets.jaffle_shop_sqlserver_password
     port: 5432
     schema: jaffle_shop
     server: localhost
-    table_schema: ./project/table_schema/jshop_schema.yml
     user: yetl
 table_schema:
     apiVersion:
@@ -30,41 +28,26 @@ table_schema:
         namespace: yetl-framework.io
         type: TableSchema
         version: '1'
+    classification: general
     columns:
     -   column: id
         description: null
         nullable: false
         ordinal: 1
         type: int
-    -   column: user_id
+    -   column: first_name
         description: null
         nullable: false
         ordinal: 2
-        type: int
-    -   column: order_date
+        type: varchar(50)
+    -   column: last_name
         description: null
         nullable: false
         ordinal: 3
-        type: date
-    -   column: status
-        description: null
-        nullable: false
-        ordinal: 4
         type: varchar(50)
-    -   column: _etl_loaded_at
-        description: null
-        nullable: false
-        ordinal: 5
-        type: datetime
-    foreign_keys:
-    -   column: user_id
-        reference:
-            column: id
-            schema: jaffle_shop
-            table: customers
-    name: orders
+    foreign_keys: []
+    name: customers
     partitioning: []
     unique_identifiers:
     - id
-    watermarks:
-    - _etl_loaded_at
+    watermarks: []

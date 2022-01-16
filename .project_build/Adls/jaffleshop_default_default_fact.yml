@@ -1,0 +1,40 @@
+dataset:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: Deltalake
+        version: '1'
+    name: default_fact
+    path: prepared/jaffleshop/general/default
+    write_options:
+        mergeschema: true
+        mode: append
+        partitions:
+        - partition
+datastore:
+    abfss: prepared@adlsgeneva.dfs.core.windows.net
+    account: adlsgeneva
+    apiVersion:
+        base: Datastore
+        namespace: yetl-framework.io
+        type: Adls
+        version: '1'
+    container: prepared
+    dbfs: mnt/prepared
+    description: Deltalake store for jaffleshop
+    name: jaffleshop
+    schema: default
+table_schema:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: TableSchema
+        version: '1'
+    classification: general
+    foreign_keys: null
+    name: fact
+    partitioning: []
+    unique_identifiers:
+    - id
+    watermarks:
+    - _batched_at

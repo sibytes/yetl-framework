@@ -1,4 +1,4 @@
-from typing_extensions import OrderedDict
+
 from jinja2 import BaseLoader, TemplateNotFound, Environment, Undefined
 from os.path import getmtime
 import os
@@ -350,12 +350,6 @@ class FileMetasource(BaseLoader):
 
         return contents, filename, uptodate
 
-    def get_parameters(self, template: str):
-
-        contents = self._get_source_dict(template)
-        contents["datastore"] = contents
-        contents["table"] = {}
-        return contents
 
 
 class Builder:
@@ -386,21 +380,23 @@ class Builder:
             ds = cls._render(i_ds, env, datastore_params)
 
             dataset_idx = Builder._get_linked_index(ds, "dataset", env, loader)
+            del ds["dataset"]
             # # dataset = loader.get_source_dict(index)
             dataset_params = {"datastore": ds}
             table_schema_idx = Builder._get_linked_index(
                 ds, "table_schema", env, loader
             )
             # if there is a table schema then render a metadoc for every table
+            
             if table_schema_idx:
-
+                del ds["table_schema"]
                 table_schema = loader.get_source_dict(table_schema_idx)
 
                 for table, schema in table_schema["dataset"].items():
 
                     schema["name"] = table
                     dataset_params["table"] = schema
-
+                    
                     metadoc = {"datastore": ds}
                     try:
                         rendered_dataset = Builder._render(
@@ -434,15 +430,23 @@ class Builder:
 
         lkup = cls._linked_index_resolvers[resolver]
 
+        dict_index = None
+        path = datastore.get(resolver)
+        if path:
+            dict_index = path.split(FileMetasource._INDEX_SEPARATOR)
+            if len(dict_index) > 1:
+                dict_index = [dict_index[0], resolver] + dict_index[1::]
+            elif lkup[1] not in FileMetasource._DISABLE_DICT_INDEX_TYPES:
+                dict_index = [dict_index[0], resolver, FileMetasource._API_DEFAULT]
         # search for a template <type>!<sub_type>!<[path]>
-        path: str = datastore.get(resolver)
-        path = path.split("!")
+        # path: str = datastore.get(resolver)
+        # path = path.split("!")
 
         # there may not always be a table_schema
         # since we may not want to autogenerate metadata for tables schema_list
         # we may want to build them more specifically.
-        if path:
-            templates = Builder._list_templates(env, *lkup, *path)
+        if dict_index:
+            templates = Builder._list_templates(env, *lkup, *dict_index)
 
             if len(templates) == 0:
                 raise Exception(

@@ -8,3 +8,4 @@ dataset:
         - partition
       mode: append
       mergeschema: true
+

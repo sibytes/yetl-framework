@@ -1,5 +1,0 @@
-apiVersion: yetl-framework.io/1/Dataset/SQL
-dataset:
-  default:
-    query: |
-      select * from {{table.name}} where 1 = 1

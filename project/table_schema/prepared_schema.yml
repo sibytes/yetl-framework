@@ -1,0 +1,9 @@
+apiVersion: yetl-framework.io/1/Dataset/TableSchema
+dataset:
+  fact:
+    classification: general
+    unique_identifiers: [id]
+    foreign_keys:
+    watermarks:
+      - _batched_at
+    partitioning: []
