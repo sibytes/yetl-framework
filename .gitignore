@@ -135,3 +135,5 @@ dmypy.json
 
 # ignore database engines
 /source_databases/postgres/postgres/*
+
+.project_build
