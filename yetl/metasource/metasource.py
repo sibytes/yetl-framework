@@ -21,6 +21,7 @@ class FileMetasource(BaseLoader):
     _INDEX_SEPARATOR = "!"
     _ENABLE_DICT_INDEX_BASES = ["Datastore", "Dataset"]
     _DISABLE_DICT_INDEX_TYPES = ["TableSchema"]
+    _ENABLE_DEFAULT = ["Dataset"]
 
     def __init__(
         self,
@@ -56,11 +57,22 @@ class FileMetasource(BaseLoader):
                     default = {}
                 default[self._API_VESRION] = api_version
                 defaulted = {}
+                base = api_version["base"]
 
                 for ki, vi in v.items():
                     if isinstance(vi, dict):
-                        if ki != self._API_DEFAULT or len(v.items()) == 1:
+
+                        if (
+                            ki != self._API_DEFAULT
+                            or base in self._ENABLE_DEFAULT
+                            or len(v.items()) == 1
+                        ):
                             defaulted[ki] = dict(ChainMap(vi, default))
+
+                        # if (api_version["base"] in self._ENABLE_DEFAULT) and (
+                        #     api_version["type"] not in self._DISABLE_DICT_INDEX_TYPES
+                        # ):
+                        #     pass
                     else:
                         defaulted[ki] = vi
 
@@ -198,7 +210,12 @@ class FileMetasource(BaseLoader):
                         for k, v in metadata.items():
                             if isinstance(v, dict):
                                 for ki, vi in v.items():
-                                    if ki != self._API_DEFAULT and isinstance(vi, dict):
+                                    # if it's not a default and a dictionary
+                                    # or defaults are enabled.
+                                    if (
+                                        ki != self._API_DEFAULT
+                                        or base in self._ENABLE_DEFAULT
+                                    ) and isinstance(vi, dict):
                                         # build part1 and part2 of the index and add the index
                                         keys = [base, type, path, k, ki]
                                         index = self._INDEX_SEPARATOR.join(keys)
@@ -393,7 +410,7 @@ class Builder:
                         rendered_dataset = loader.get_source_dict(dataset_idx)
 
                     metadoc["table_schema"] = schema
-                    metadoc["dataset"] = rendered_dataset["dataset"]
+                    metadoc["dataset"] = rendered_dataset
 
                     docs.append(metadoc)
             # if there is no table schema then we're not metadata driving the dataset
@@ -404,7 +421,7 @@ class Builder:
                     rendered_dataset = Builder._render(dataset_idx, env, dataset_params)
                 except:
                     rendered_dataset = loader.get_source_dict(dataset_idx)
-                    metadoc["dataset"] = rendered_dataset["dataset"]
+                    metadoc["dataset"] = rendered_dataset
                 docs.append(metadoc)
 
         #     ds = Builder._render(tpt_ds, env, loader.get_parameters(tpt_ds))
@@ -418,13 +435,14 @@ class Builder:
         lkup = cls._linked_index_resolvers[resolver]
 
         # search for a template <type>!<sub_type>!<[path]>
-        path = datastore.get(resolver)
+        path: str = datastore.get(resolver)
+        path = path.split("!")
 
         # there may not always be a table_schema
         # since we may not want to autogenerate metadata for tables schema_list
         # we may want to build them more specifically.
         if path:
-            templates = Builder._list_templates(env, *lkup, path)
+            templates = Builder._list_templates(env, *lkup, *path)
 
             if len(templates) == 0:
                 raise Exception(

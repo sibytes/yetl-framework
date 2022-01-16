@@ -31,6 +31,7 @@ for i in templates:
     base = i["datastore"]["apiVersion"]["base"]
     type = i["datastore"]["apiVersion"]["type"]
     datastore_name = i["datastore"]["name"]
+    schema_name = i["datastore"]["schema"]
     try:
         dataset_name = i["dataset"]["default"]["name"]
     except:
@@ -48,7 +49,7 @@ for i in templates:
     if not os.path.exists(path):
         os.makedirs(path)
 
-    path = f"{path}/{datastore_name}_{dataset_name}.yml"
+    path = f"{path}/{datastore_name}_{schema_name}_{dataset_name}.yml"
 
     with open(path, "w") as f:
         f.write(yaml.dump(i, indent=4, Dumper=NoAliasDumper))

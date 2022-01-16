@@ -1,6 +1,13 @@
 dataset:
+    apiVersion:
+        base: Dataset
+        namespace: yetl-framework.io
+        type: SQL
+        version: '1'
     name: payments
-    query: select * from payments where 1 = 1
+    query: 'select * from payments where 1 = 1
+
+        '
 datastore:
     apiVersion:
         base: Datastore
@@ -8,7 +15,7 @@ datastore:
         type: SqlServer
         version: '1'
     compatibility: azure
-    dataset: ./project/dataset/sql.yml
+    dataset: ./project/dataset/sql.yml!dataset!default
     description: Source transactional database store for jaffle_shop
     name: jaffle_shop
     password: secrets.jaffle_shop_sqlserver_password
